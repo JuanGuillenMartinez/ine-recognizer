@@ -2,8 +2,6 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Log;
-
 class ResponseFormatter
 {
     public function formattedResponse(array $rawDocuments)
@@ -19,7 +17,10 @@ class ResponseFormatter
     {
         $formattedFields = [];
         foreach ($fields as $key => $field) {
-            $formattedFields[$key] = $field['content'];
+            if(isset($field['content'])) {
+                $content = $field['content'];
+                $formattedFields[$key] = $content;
+            }
         }
         return $formattedFields;
     }

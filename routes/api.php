@@ -19,4 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/analyze/documents/ine', [DocumentController::class, 'analyzeIne']);
+Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
+Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);

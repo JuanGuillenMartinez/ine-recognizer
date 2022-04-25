@@ -2,8 +2,6 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Facades\Log;
-
 class AzureRecognitionRequest
 {
     static $response;
@@ -54,7 +52,6 @@ class AzureRecognitionRequest
 
     public function getResults($responseId)
     {
-        Log::info($responseId);
         $response = $this->getCurlResults($responseId);
         if (!isset($response['status'])) {
             return $response;
