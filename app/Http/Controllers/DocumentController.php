@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Helpers\JsonResponse;
 use App\Helpers\ResponseFormatter;
 use App\Helpers\AzureRecognitionRequest;
+use App\Http\Requests\IneRequest;
 
 class DocumentController extends Controller
 {
-    public function analyzeFrontIne(Request $request)
+    public function analyzeFrontIne(IneRequest $request)
     {
-        $rawResponse = $this->analyzeDocument($request->front_document_url);
+        $rawResponse = $this->analyzeDocument($request->document_url);
         $formatter = new ResponseFormatter();
         $formattedResponse = $formatter->formattedResponse($rawResponse['analyzeResult']['documents']);
         return JsonResponse::sendResponse($formattedResponse);
     }
 
-    public function analyzeBackIne(Request $request)
+    public function analyzeBackIne(IneRequest $request)
     {
-        $rawResponse = $this->analyzeDocument($request->back_document_url);
+        $rawResponse = $this->analyzeDocument($request->document_url);
         $formatter = new ResponseFormatter();
         $formattedResponse = $formatter->formattedResponse($rawResponse['analyzeResult']['documents']);
         return JsonResponse::sendResponse($formattedResponse);
