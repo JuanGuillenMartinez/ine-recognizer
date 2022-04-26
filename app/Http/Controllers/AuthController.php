@@ -48,6 +48,7 @@ class AuthController extends Controller
 
         if ($userIsValid) {
             $user = User::where('email', $email)->first();
+            $user->tokens()->delete();
             $token = $user->createToken('auth-token');
             return JsonResponse::sendResponse([
                 'token' => $token->plainTextToken
