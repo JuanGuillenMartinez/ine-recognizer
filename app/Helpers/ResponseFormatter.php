@@ -10,6 +10,7 @@ class ResponseFormatter
             $fieldsFormatted = $this->formattedFields($rawDocument['fields']);
             return $fieldsFormatted;
         }, $rawDocuments);
+        $formattedResponse = $this->clearGenderField($formattedResponse);
         return $formattedResponse;
     }
 
@@ -17,11 +18,23 @@ class ResponseFormatter
     {
         $formattedFields = [];
         foreach ($fields as $key => $field) {
-            if(isset($field['content'])) {
+            if (isset($field['content'])) {
                 $content = $field['content'];
                 $formattedFields[$key] = $content;
             }
         }
         return $formattedFields;
+    }
+
+    protected function clearGenderField(array $formattedResponse)
+    {
+        foreach ($formattedResponse as $key => $item) {
+            if (isset($item['sexo'])) {
+                $aux = str_replace('SEXO', '', $item['sexo']);
+                var_dump(trim($aux));
+                $formattedResponse[$key]['sexo'] = trim($aux);
+            }
+        }
+        return $formattedResponse;
     }
 }
