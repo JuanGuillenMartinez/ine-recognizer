@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\FaceApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,4 +27,6 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
     Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
+    Route::post('/analyze/images/face-api/detect', [FaceApiController::class, 'detectFace']);
+    Route::post('/analyze/images/face-api/verify/ine', [FaceApiController::class, 'verifyPhotoWithIne']);
 });
