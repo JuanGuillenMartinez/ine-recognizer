@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Helpers\JsonResponse;
 use App\Helpers\ResponseFormatter;
 use App\Helpers\AzureRecognitionRequest;
-use App\Http\Requests\IneRequest;
+use Illuminate\Http\Request;
 
 class DocumentController extends Controller
 {
-    public function analyzeFrontIne(IneRequest $request)
+    public function analyzeFrontIne(Request $request)
     {
         $rawResponse = $this->analyzeDocument($request->document_url);
         $formatter = new ResponseFormatter();
@@ -17,7 +17,7 @@ class DocumentController extends Controller
         return JsonResponse::sendResponse($formattedResponse);
     }
 
-    public function analyzeBackIne(IneRequest $request)
+    public function analyzeBackIne(Request $request)
     {
         $rawResponse = $this->analyzeDocument($request->document_url);
         $formatter = new ResponseFormatter();
@@ -27,7 +27,7 @@ class DocumentController extends Controller
 
     protected function analyzeDocument(string $documentUrl): array
     {
-        $azureHandler = new AzureRecognitionRequest('test-ine');
+        $azureHandler = new AzureRecognitionRequest('composed_ine_model');
         $responseId = $azureHandler->sendRequest($documentUrl);
         $rawResponse = $azureHandler->getResults($responseId);
         return $rawResponse;
