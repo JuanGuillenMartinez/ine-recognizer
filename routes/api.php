@@ -25,10 +25,11 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 // Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
 // Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
+Route::post('/analyze/images/face-api/detect', [FaceApiController::class, 'detectFace']);
+Route::post('/analyze/images/face-api/verify/face2face', [FaceApiController::class, 'verifyFaceToFace']);
+Route::post('/analyze/images/face-api/verify/ine', [FaceApiController::class, 'verifyPhotoWithIne']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
     Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
-    Route::post('/analyze/images/face-api/detect', [FaceApiController::class, 'detectFace']);
-    Route::post('/analyze/images/face-api/verify/ine', [FaceApiController::class, 'verifyPhotoWithIne']);
 });
