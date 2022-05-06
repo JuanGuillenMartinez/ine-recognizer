@@ -30,7 +30,8 @@ class FaceApiRequest
         return $jsonResponse[0];
     }
 
-    public function verifyFaceToFace($image1, $image2) {
+    public function verifyFaceToFace($image1, $image2)
+    {
         $verifyUrl = "{$this->baseUrl}/verify";
         $faceResult = $this->detect($image1);
         $faceResult2 = $this->detect($image2);
