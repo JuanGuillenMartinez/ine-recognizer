@@ -27,11 +27,26 @@ class PersonController extends Controller
         return JsonResponse::sendResponse($response);
     }
 
-    public function addFace(Request $request, $personGroupId, $personId) {
+    public function addFace(Request $request, $personGroupId, $personId)
+    {
         $imageUrl = $request->url_image;
         $userData = $request->input('user_data', '');
         $person = new Person($personGroupId);
         $response = $person->addFace($personId, $imageUrl, $userData);
+        return JsonResponse::sendResponse($response);
+    }
+
+    public function delete($personGroupId, $personId)
+    {
+        $person = new Person($personGroupId);
+        $response = $person->delete($personId);
+        return JsonResponse::sendResponse($response);
+    }
+
+    public function deleteFace($personGroupId, $personId, $persistedFaceId)
+    {
+        $person = new Person($personGroupId);
+        $response = $person->deleteFace($personId, $persistedFaceId);
         return JsonResponse::sendResponse($response);
     }
 }

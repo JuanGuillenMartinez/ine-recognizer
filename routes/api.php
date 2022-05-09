@@ -33,14 +33,18 @@ Route::post('/face-api/analyze/face2person', [FaceApiController::class, 'verifyF
 
 //* FACE API TRAINING ENDPOINTS
 //* Person group
+Route::get('/face-api/persongroups', [PersonGroupController::class, 'list']);
 Route::post('/face-api/persongroups/{personGroupId}', [PersonGroupController::class, 'create']);
 Route::get('/face-api/persongroups/{personGroupId}/training', [PersonGroupController::class, 'trainingStatus']);
 Route::post('/face-api/persongroups/{personGroupId}/train', [PersonGroupController::class, 'train']);
+Route::delete('/face-api/persongroups/{personGroupId}', [PersonGroupController::class, 'delete']);
 
 //* Person
 Route::post('/face-api/persongroups/{personGroupId}/persons', [PersonController::class, 'create']);
 Route::get('/face-api/persongroups/{personGroupId}/persons', [PersonController::class, 'listAll']);
 Route::post('/face-api/persongroups/{personGroupId}/persons/{personId}/persistedFaces', [PersonController::class, 'addFace']);
+Route::delete('/face-api/persongroups/{personGroupId}/persons/{personId}', [PersonController::class, 'delete']);
+Route::delete('/face-api/persongroups/{personGroupId}/persons/{personId}/persistedFaces/{persistedFaceId}', [PersonController::class, 'deleteFace']);
 
 //* FORM RECOGNIZER ENDPOINTS
 Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);

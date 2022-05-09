@@ -57,4 +57,17 @@ class Person
         $response = Http::withHeaders($this->headers)->get($endpoint);
         return json_decode($response);
     }
+
+    public function delete($personId)
+    {
+        $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons/{$personId}";
+        $response = Http::withHeaders($this->headers)->delete($endpoint);
+        return json_decode($response);
+    }
+
+    public function deleteFace($personId, $persistedFaceId) {
+        $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons/{$personId}/persistedFaces/{$persistedFaceId}";
+        $response = Http::withHeaders($this->headers)->delete($endpoint);
+        return json_decode($response);
+    }
 }

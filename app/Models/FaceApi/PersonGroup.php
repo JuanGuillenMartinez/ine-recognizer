@@ -50,9 +50,17 @@ class PersonGroup
         return json_decode($response);
     }
 
-    public function getTrainingStatus() {
+    public function getTrainingStatus()
+    {
         $endpoint = "{$this->baseUrl}/{$this->personGroupId}/training";
         $response = Http::withHeaders($this->headers)->get($endpoint);
+        return json_decode($response);
+    }
+
+    public function delete()
+    {
+        $endpoint = "{$this->baseUrl}/{$this->personGroupId}";
+        $response = Http::withHeaders($this->headers)->delete($endpoint);
         return json_decode($response);
     }
 }
