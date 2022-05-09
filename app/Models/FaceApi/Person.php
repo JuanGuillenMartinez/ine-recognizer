@@ -50,4 +50,11 @@ class Person
         $response = Http::withHeaders($this->headers)->get($endpoint);
         return json_decode($response);
     }
+
+    public function get($personId)
+    {
+        $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons/{$personId}";
+        $response = Http::withHeaders($this->headers)->get($endpoint);
+        return json_decode($response);
+    }
 }
