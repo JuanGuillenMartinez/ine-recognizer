@@ -9,20 +9,22 @@ class PersonGroup
     protected $baseUrl;
     protected $recognitionModel;
     protected $headers;
+    protected $personGroupId;
 
-    public function __construct()
+    public function __construct($personGroupId)
     {
         $this->baseUrl = "https://test-faceapi-fymsa.cognitiveservices.azure.com/face/v1.0/persongroups";
         $this->recognitionModel = 'recognition_04';
+        $this->personGroupId = $personGroupId;
         $this->headers = [
             'Content-Type' => 'application/json',
             'Ocp-Apim-Subscription-Key' => env('FACEAPI_SUBSCRIPTION_KEY'),
         ];
     }
 
-    public function create(string $personGroupId, array $properties)
+    public function save(array $properties)
     {
-        $endpoint = "{$this->baseUrl}/{$personGroupId}";
+        $endpoint = "{$this->baseUrl}/{$this->personGroupId}";
         $response = Http::withHeaders($this->headers)->put($endpoint, [
             'name' => $properties['name'],
             'userData' => $properties['userData'],
@@ -34,22 +36,22 @@ class PersonGroup
         return json_decode($response);
     }
 
-    public function get(string $personGroupId, bool $returnRecognitionModel = false)
+    public function get(bool $returnRecognitionModel = false)
     {
-        $endpoint = "{$this->baseUrl}/{$personGroupId}";
+        $endpoint = "{$this->baseUrl}/{$this->personGroupId}";
         $response = Http::withHeaders($this->headers)->get($endpoint, ['returnRecognitionModel' => $returnRecognitionModel]);
         return json_decode($response);
     }
 
-    public function train(string $personGroupId)
+    public function train()
     {
-        $endpoint = "{$this->baseUrl}/{$personGroupId}/train";
+        $endpoint = "{$this->baseUrl}/{$this->personGroupId}/train";
         $response = Http::withHeaders($this->headers)->post($endpoint);
         return json_decode($response);
     }
 
-    public function getTrainingStatus(string $personGroupId) {
-        $endpoint = "{$this->baseUrl}/{$personGroupId}/training";
+    public function getTrainingStatus() {
+        $endpoint = "{$this->baseUrl}/{$$this->personGroupId}/training";
         $response = Http::withHeaders($this->headers)->get($endpoint);
         return json_decode($response);
     }
