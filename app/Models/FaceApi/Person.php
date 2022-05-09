@@ -13,7 +13,7 @@ class Person
 
     public function __construct($personGroupId)
     {
-        $this->baseUrl = "https://test-faceapi-fymsa.cognitiveservices.azure.com/face/v1.0/persongroups";
+        $this->baseUrl = env('URL_BASE_FACEAPI') . "/persongroups";
         $this->detectionModel = 'detection_03';
         $this->personGroupId = $personGroupId;
         $this->headers = [
@@ -22,7 +22,7 @@ class Person
         ];
     }
 
-    public function create($name, $userData = '')
+    public function save($name, $userData = '')
     {
         $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons";
         $response = Http::withHeaders($this->headers)->post($endpoint, [

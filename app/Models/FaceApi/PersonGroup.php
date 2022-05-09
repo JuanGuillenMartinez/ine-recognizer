@@ -13,7 +13,7 @@ class PersonGroup
 
     public function __construct($personGroupId)
     {
-        $this->baseUrl = "https://test-faceapi-fymsa.cognitiveservices.azure.com/face/v1.0/persongroups";
+        $this->baseUrl = env('URL_BASE_FACEAPI') . "/persongroups";
         $this->recognitionModel = 'recognition_04';
         $this->personGroupId = $personGroupId;
         $this->headers = [
@@ -30,6 +30,10 @@ class PersonGroup
             'userData' => $properties['userData'],
             'recognitionModel' => $this->recognitionModel,
         ]);
+        echo '<pre>';
+        var_dump($response);
+        echo '</pre>';
+        die;
         if (is_null($response)) {
             return (object) array('success' => true);
         }
@@ -51,7 +55,7 @@ class PersonGroup
     }
 
     public function getTrainingStatus() {
-        $endpoint = "{$this->baseUrl}/{$$this->personGroupId}/training";
+        $endpoint = "{$this->baseUrl}/{$this->personGroupId}/training";
         $response = Http::withHeaders($this->headers)->get($endpoint);
         return json_decode($response);
     }
