@@ -32,6 +32,6 @@ class PersonController extends Controller
         $userData = $request->input('user_data', '');
         $person = new Person($personGroupId);
         $response = $person->addFace($personId, $imageUrl, $userData);
-        return $response;
+        return JsonResponse::sendResponse($response);
     }
 }
