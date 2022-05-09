@@ -22,18 +22,14 @@ class PersonGroup
         ];
     }
 
-    public function save(array $properties)
+    public function save($name, $userData = "")
     {
         $endpoint = "{$this->baseUrl}/{$this->personGroupId}";
         $response = Http::withHeaders($this->headers)->put($endpoint, [
-            'name' => $properties['name'],
-            'userData' => $properties['userData'],
+            'name' => $name,
+            'userData' => $userData,
             'recognitionModel' => $this->recognitionModel,
         ]);
-        echo '<pre>';
-        var_dump($response);
-        echo '</pre>';
-        die;
         if (is_null($response)) {
             return (object) array('success' => true);
         }
