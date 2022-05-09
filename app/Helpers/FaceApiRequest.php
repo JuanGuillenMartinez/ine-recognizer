@@ -42,4 +42,16 @@ class FaceApiRequest
         $jsonResponse = json_decode($response->body());
         return $jsonResponse;
     }
+
+    public function verifyFaceToPerson($urlImage, $personGroupId, $personId) {
+        $verifyUrl = "{$this->baseUrl}/verify";
+        $response = $this->detect($urlImage);
+        $faceId = $response->faceId;
+        $response = Http::withHeaders($this->headers)->post($verifyUrl, [
+            'faceId' => $faceId,
+            'personGroupId' => $personGroupId,
+            'personId' => $personId
+        ]);
+        return json_decode($response);
+    }
 }

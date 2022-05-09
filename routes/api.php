@@ -29,7 +29,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 //* FACE API ENDPOINTS
 Route::post('/face-api/detect', [FaceApiController::class, 'detectFace']);
 Route::post('/face-api/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
-Route::post('/face-api/analyze/face2person', [FaceApiController::class, 'face2person']);
+Route::post('/face-api/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
 
 //* FACE API TRAINING ENDPOINTS
 //* Person group

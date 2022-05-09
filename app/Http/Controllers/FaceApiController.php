@@ -22,4 +22,13 @@ class FaceApiController extends Controller
         $results = $handler->verifyFaceToFace($urlImage1, $urlImage2);
         return JsonResponse::sendResponse($results, 'El análisis ha finalizado correctamente');
     }
+
+    public function verifyFaceToPerson(Request $request) {
+        $urlImage = $request->url_image;
+        $personGroupId = $request->person_group_id;
+        $personId = $request->person_id;
+        $handler = new FaceApiRequest();
+        $results = $handler->verifyFaceToPerson($urlImage, $personGroupId, $personId);
+        return JsonResponse::sendResponse($results, 'El análisis ha finalizado correctamente');
+    }
 }
