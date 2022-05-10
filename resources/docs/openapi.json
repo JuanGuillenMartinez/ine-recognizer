@@ -1,0 +1,973 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Recognizer",
+        "description": "",
+        "version": "1.0.0"
+    },
+    "tags": [
+        {
+            "name": "Autenticación"
+        },
+        {
+            "name": "FaceApi"
+        },
+        {
+            "name": "Form Recognizer"
+        }
+    ],
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/api"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": ["Autenticación"],
+                "summary": "Obtener API Token",
+                "description": "**Iniciar sesión**\n\n  Obtiene un API Token requerido en las peticiones siguiente. El token tiene un tiempo de expiración de 24 horas.",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "Correo electrónico registrado"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "format": "password",
+                            "description": "Contraseña de inicio de sesión registrada"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión correcto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Auth"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "An error has ocurred"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/InternalServerError"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/faceapi/detect": {
+            "post": {
+                "tags": ["FaceApi"],
+                "summary": "Detectar y analizar imágenes",
+                "description": "**Analizar rostros contenidas en la imagen recibida**\n\nDetectar y analizar rostros en imágenes. Este endpoint devuelve el faceId necesario para realizar la verificación de identidad Face to Face o Face to Person",
+                "parameters": [
+                    {
+                        "name": "url_image",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "URL de la imagen para ser analizada"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión correcto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "El análisis ha finalizado correctamente"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FaceIdResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/facaeapi/analyze/face2face": {
+            "post": {
+                "tags": ["FaceApi"],
+                "summary": "Análisis de imágenes",
+                "description": "**Analizar rostros de la imagen recibida** \n\n Permite recibir dos imágenes para analizar y detectar la identidad de una persona mediante reconocimiento Rostro a Rostro",
+                "parameters": [
+                    {
+                        "name": "url_image_1",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Primer imagen a ser analizada"
+                        }
+                    },
+                    {
+                        "name": "url_image_2",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Segunda imagen a ser analizada"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solicitud realizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "El análisis ha finalizado correctamente"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DetectResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/facaeapi/analyze/face2person": {
+            "post": {
+                "tags": ["FaceApi"],
+                "summary": "Análisis de imágenes",
+                "description": "**Analizar rostros de la imagen recibida** \n\n Permite recibir una imagen para analizar y detectar la identidad de una persona mediante reconocimiento Rostro a Persona. \n\n Es importante que previamente al análisis, crear la respectiva persona, el grupo de personas al que va pertenecer y realizar el respectivo entrenamiento.",
+                "parameters": [
+                    {
+                        "name": "url_image",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Primer imagen a ser analizada"
+                        }
+                    },
+                    {
+                        "name": "person_group_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona a ser analizada"
+                        }
+                    },
+                    {
+                        "name": "person_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID de la persona a ser analizada"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solicitud realizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "El análisis ha finalizado correctamente"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/DetectResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/faceapi/persongroups": {
+            "get": {
+                "tags": ["FaceApi - Person Group"],
+                "summary": "Listar grupo de personas",
+                "description": "**Listar grupo de personas registrados.",
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "personGroupId": {
+                                                        "type": "string",
+                                                        "example": "Person group id"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Person group name"
+                                                    },
+                                                    "userData": {
+                                                        "type": "string",
+                                                        "example": "Person information"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/faceapi/persongroups/{personGroupId}": {
+            "post": {
+                "tags": ["FaceApi - Person Group"],
+                "summary": "Crear grupo de personas",
+                "description": "**Registrar y crear un grupo de personas (Person Group)** \n\n Registrar grupo de personas.",
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona provisto por el usuario"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "Nombre del grupo de persona"
+                        }
+                    },
+                    {
+                        "name": "user_data",
+                        "in": "query",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "Información acerca del grupo de persona provista por el usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "personGroupId": {
+                                                    "type": "string",
+                                                    "example": "persongroupid"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "name person group"
+                                                },
+                                                "userData": {
+                                                    "type": "string",
+                                                    "example": "user data information"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/faceapi/persongroups/{personGroupId}/train": {
+            "post": {
+                "tags": ["FaceApi - Person Group"],
+                "summary": "Entrenar grupo de personas (Person Group)",
+                "description": "**Iniciar entrenamiento del grupo de personas especificado. \n\n Para iniciar el proceso de entrenamiento debe haber registrado por lo menos una persona en el grupo.",
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona provisto por el usuario"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "Nombre del grupo de persona"
+                        }
+                    },
+                    {
+                        "name": "user_data",
+                        "in": "query",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "Información acerca del grupo de persona provista por el usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "personGroupId": {
+                                                    "type": "string",
+                                                    "example": "persongroupid"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "name person group"
+                                                },
+                                                "userData": {
+                                                    "type": "string",
+                                                    "example": "user data information"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/faceapi/persongroups/{personGroupId}/persons": {
+            "post": {
+                "tags": ["FaceApi - Person"],
+                "summary": "Crear persona (Person)",
+                "description": "**Crear persona (Person) y asignar a un grupo de personas (Person Group). Este endpoint devuelve el ID de la persona (personId) requerida para añadir las respectivas fotografías.",
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona provisto por el usuario"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "Nombre del grupo de persona"
+                        }
+                    },
+                    {
+                        "name": "user_data",
+                        "in": "query",
+                        "required": false,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "Información acerca del grupo de persona provista por el usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "personId": {
+                                                    "type": "string",
+                                                    "example": "18845c3e-ca76-4593-a717-rtds437sd5"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "persistedFaceIds": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "persistedFaceId": {
+                                                                "type": "string",
+                                                                "example": "18845c3e-ca76-4593-a717-rtds437sd5"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "get": {
+                "tags": ["FaceApi - Person"],
+                "summary": "Listar personas (Persons)",
+                "description": "**Añadir rostro al ID de la persona enviada. El endpoint recibe la URL de la imagen que sera persistida y utilizada para futuros análisis y detecciones de rostros.",
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona provisto por el usuario"
+                        }
+                    },
+                    {
+                        "name": "personId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID de la persona provista por el usuario"
+                        }
+                    },
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "URL de la imagen que sera persistida y almacenada en la información de la persona."
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "persistedFaceId": {
+                                                    "type": "string",
+                                                    "example": "18845c3e-ca76-4593-a717-rtds437sd5"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces": {
+            "post": {
+                "tags": ["FaceApi - Person"],
+                "summary": "Añadir rostro (Face)",
+                "description": "**Añadir rostro al ID de la persona enviada. El endpoint recibe la URL de la imagen que sera persistida y utilizada para futuros análisis y detecciones de rostros.",
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona provisto por el usuario"
+                        }
+                    },
+                    {
+                        "name": "personId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID de la persona provista por el usuario"
+                        }
+                    },
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "URL de la imagen que sera persistida y almacenada en la información de la persona."
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "persistedFaceId": {
+                                                    "type": "string",
+                                                    "example": "18845c3e-ca76-4593-a717-rtds437sd5"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "FaceIdResponse": {
+                "type": "object",
+                "properties": {
+                    "faceId": {
+                        "type": "string",
+                        "example": "f235435-3809-4af4-ac8d-471848e318dc"
+                    },
+                    "faceRectangle": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "top": {
+                                    "type": "number",
+                                    "example": 1792
+                                },
+                                "left": {
+                                    "type": "number",
+                                    "example": 875
+                                },
+                                "width": {
+                                    "type": "number",
+                                    "example": 431
+                                },
+                                "height": {
+                                    "type": "number",
+                                    "example": 431
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "DetectResponse": {
+                "title": "DetectResponse",
+                "type": "object",
+                "properties": {
+                    "isIdentical": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "confidence": {
+                        "type": "number",
+                        "example": 0.8135
+                    }
+                }
+            },
+            "Auth": {
+                "title": "Token",
+                "type": "object",
+                "properties": {
+                    "token": {
+                        "type": "string",
+                        "example": "HBAS&/%AS/(TAS%$%#534678AS"
+                    }
+                }
+            },
+            "InternalServerError": {
+                "title": "Token",
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "example": "Internal server error"
+                    }
+                }
+            },
+            "NoAuth": {
+                "title": "No autenticado",
+                "type": "object",
+                "properties": {
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Unauthenticated."
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "sanctum"
+            }
+        }
+    }
+}
