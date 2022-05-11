@@ -10,10 +10,16 @@
             "name": "Autenticación"
         },
         {
+            "name": "Form Recognizer"
+        },
+        {
             "name": "FaceApi"
         },
         {
-            "name": "Form Recognizer"
+            "name": "FaceApi - Person Group"
+        },
+        {
+            "name": "FaceApi - Person"
         }
     ],
     "servers": [
@@ -113,6 +119,140 @@
                 }
             }
         },
+        "/analyze/documents/ine/front": {
+            "post": {
+                "tags": ["Form Recognizer"],
+                "summary": "Extraer información del INE",
+                "description": "**Extraer información de la parte delantera del documento INE**\n\nDetecta y extrae información en formato de pares clave-valor de una imagen tomada de la credencial de elector. La imagen debe tener un peso menor a 2mb.",
+                "parameters": [
+                    {
+                        "name": "document_url",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "URL de la imagen para ser analizada"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión correcto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request successfully completed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/FrontIneResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/analyze/documents/ine/back": {
+            "post": {
+                "tags": ["Form Recognizer"],
+                "summary": "Extraer información del INE",
+                "description": "**Extraer información de la parte trasera del documento INE**\n\nDetecta y extrae información en formato de pares clave-valor de una imagen tomada de la credencial de elector. La imagen debe tener un peso menor a 2mb.",
+                "parameters": [
+                    {
+                        "name": "document_url",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "URL de la imagen para ser analizada"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión correcto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request successfully completed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BackIneResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/faceapi/detect": {
             "post": {
                 "tags": ["FaceApi"],
@@ -183,7 +323,7 @@
                 ]
             }
         },
-        "/facaeapi/analyze/face2face": {
+        "/faceapi/analyze/face2face": {
             "post": {
                 "tags": ["FaceApi"],
                 "summary": "Análisis de imágenes",
@@ -261,7 +401,7 @@
                 ]
             }
         },
-        "/facaeapi/analyze/face2person": {
+        "/faceapi/analyze/face2person": {
             "post": {
                 "tags": ["FaceApi"],
                 "summary": "Análisis de imágenes",
@@ -1207,6 +1347,80 @@
     },
     "components": {
         "schemas": {
+            "FrontIneResponse": {
+                "type": "object",
+                "properties": {
+                    "sexo": {
+                        "type": "string",
+                        "example": "M"
+                    },
+                    "registro": {
+                        "type": "string",
+                        "example": "2008 01"
+                    },
+                    "vigencia": {
+                        "type": "string",
+                        "example": "2019 - 2029"
+                    },
+                    "apellido_paterno": {
+                        "type": "string",
+                        "example": "GOMEZ"
+                    },
+                    "pais_emision": {
+                        "type": "string",
+                        "example": "MÉXICO"
+                    },
+                    "nacimiento": {
+                        "type": "string",
+                        "example": "05/07/1980"
+                    },
+                    "identificacion": {
+                        "type": "string",
+                        "example": "INSTITUTO NACIONAL ELECTORAL CREDENCIAL PARA VOTAR"
+                    },
+                    "curp": {
+                        "type": "string",
+                        "example": "GOVM800705MCLR01"
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "MARGARITA"
+                    },
+                    "clave_elector": {
+                        "type": "string",
+                        "example": "GMVLMR80070501M100"
+                    },
+                    "domicilio": {
+                        "type": "string",
+                        "example": "VIADUCTO TLALPAN NO. 100 COL. ARENAL TEPEPAN, ALCALDIA TLALPAN. C.P. 14610, CIUDAD DE MEXICO."
+                    },
+                    "apellido_materno": {
+                        "type": "string",
+                        "example": "VELAZQUEZ"
+                    },
+                    "seccion": {
+                        "type": "string",
+                        "example": "0001"
+                    }
+                }
+            },
+            "BackIneResponse": {
+                "type": "object",
+                "properties": {
+                    "identificador_fecha": {
+                        "type": "string",
+                        "example": "9612104M2812513MEX<00"
+                    },
+                    "identificador_documento": {
+                        "type": "string",
+                        "example": "IDMEX1721823456"
+                    },
+                    "identificador_titular": {
+                        "type": "string",
+                        "example": "ALTOSANO<MARTINEZ << LUIS <<<<<<<<"
+                    }
+                }
+            },
             "FaceIdResponse": {
                 "type": "object",
                 "properties": {
