@@ -21,6 +21,10 @@
             "url": "http://127.0.0.1:8000/api"
         }
     ],
+    "externalDocs": {
+        "description": "Documentación oficial mas detallada acerca del servicio de FaceAPi proporcionado por Azure y con el cual funciona el microservicio.",
+        "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236"
+    },
     "paths": {
         "/login": {
             "post": {
@@ -113,7 +117,7 @@
             "post": {
                 "tags": ["FaceApi"],
                 "summary": "Detectar y analizar imágenes",
-                "description": "**Analizar rostros contenidas en la imagen recibida**\n\nDetectar y analizar rostros en imágenes. Este endpoint devuelve el faceId necesario para realizar la verificación de identidad Face to Face o Face to Person",
+                "description": "**Analizar rostros contenidas en la imagen recibida**\n\nDetecta y analiza rostros humanos en imágenes. Este endpoint devuelve el faceId necesario para realizar la verificación de identidad Face to Face o Face to Person",
                 "parameters": [
                     {
                         "name": "url_image",
@@ -339,7 +343,7 @@
             "get": {
                 "tags": ["FaceApi - Person Group"],
                 "summary": "Listar grupo de personas",
-                "description": "**Listar grupo de personas registrados.",
+                "description": "**Listar grupo de personas registrados.** \n\nDevuelve un arreglo de los grupos de persona registrados hasta el momento",
                 "responses": {
                     "200": {
                         "description": "Request succesfully completed",
@@ -499,13 +503,75 @@
                         "bearerAuth": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": ["FaceApi - Person Group"],
+                "summary": "Crear grupo de personas",
+                "description": "**Eliminar grupo de personas** \n\n Eliminar grupo de personas, incluyendo las personas registradas y sus respectivas caras (Faces).",
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona provisto por el usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "nullable": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/faceapi/persongroups/{personGroupId}/train": {
             "post": {
                 "tags": ["FaceApi - Person Group"],
                 "summary": "Entrenar grupo de personas (Person Group)",
-                "description": "**Iniciar entrenamiento del grupo de personas especificado. \n\n Para iniciar el proceso de entrenamiento debe haber registrado por lo menos una persona en el grupo.",
+                "description": "**Iniciar entrenamiento del grupo de personas especificado.** \n\n Para iniciar el proceso de entrenamiento debe haber registrado por lo menos una persona en el grupo.",
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -602,7 +668,7 @@
             "post": {
                 "tags": ["FaceApi - Person"],
                 "summary": "Crear persona (Person)",
-                "description": "**Crear persona (Person) y asignar a un grupo de personas (Person Group). Este endpoint devuelve el ID de la persona (personId) requerida para añadir las respectivas fotografías.",
+                "description": "**Crear persona (Person) y asignar a un grupo de personas (Person Group).** \n\nEste endpoint devuelve el ID de la persona (personId) requerida para añadir las respectivas fotografías.",
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -705,7 +771,7 @@
             "get": {
                 "tags": ["FaceApi - Person"],
                 "summary": "Listar personas (Persons)",
-                "description": "**Añadir rostro al ID de la persona enviada. El endpoint recibe la URL de la imagen que sera persistida y utilizada para futuros análisis y detecciones de rostros.",
+                "description": "**Añadir rostro al ID de la persona enviada.** \n\nEl endpoint recibe la URL de la imagen que sera persistida y utilizada para futuros análisis y detecciones de rostros.",
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -789,11 +855,94 @@
                 ]
             }
         },
+        "/faceapi/persongroups/{personGroupId}/persons/{personId}": {
+            "delete": {
+                "tags": ["FaceApi - Person"],
+                "summary": "Eliminar persona",
+                "description": "**Elimina una persona existente en un grupo de personas.** \n\nToda la información de la persona sera eliminada (persistedFaceId, userData, personName, etc).",
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona provisto por el usuario"
+                        }
+                    },
+                    {
+                        "name": "personId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID de la persona provista por el usuario"
+                        }
+                    },
+                    {
+                        "name": "url",
+                        "in": "query",
+                        "required": true,
+                        "style": "form",
+                        "schema": {
+                            "type": "string",
+                            "description": "URL de la imagen que sera persistida y almacenada en la información de la persona."
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "nullable": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces": {
             "post": {
                 "tags": ["FaceApi - Person"],
                 "summary": "Añadir rostro (Face)",
-                "description": "**Añadir rostro al ID de la persona enviada. El endpoint recibe la URL de la imagen que sera persistida y utilizada para futuros análisis y detecciones de rostros.",
+                "description": "**Añadir rostro al ID de la persona enviada.** \n\nEl endpoint recibe la URL de la imagen que sera persistida y utilizada para entrenar el algoritmo de reconocimiento facial por persona.",
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -850,6 +999,88 @@
                                                     "example": "18845c3e-ca76-4593-a717-rtds437sd5"
                                                 }
                                             }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces/{persistedFaceId}": {
+            "delete": {
+                "tags": ["FaceApi - Person"],
+                "summary": "Eliminar rostro (Face)",
+                "description": "**Eliminar rostro** \n\nEliminar información registrada de acuerdo al ID proporcionado.",
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del grupo de persona provisto por el usuario"
+                        }
+                    },
+                    {
+                        "name": "personId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID de la persona provista por el usuario"
+                        }
+                    },
+                    {
+                        "name": "persistedFaceId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del rostro provista por el usuario"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "nullable": true
                                         }
                                     }
                                 }
