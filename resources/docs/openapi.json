@@ -22,8 +22,8 @@
         }
     ],
     "externalDocs": {
-        "description": "Documentación oficial mas detallada acerca del servicio de FaceAPi proporcionado por Azure y con el cual funciona el microservicio.",
-        "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236"
+        "description": "Documentación oficial acerca del servicio de FaceAPi.",
+        "url": "https://docs.microsoft.com/es-mx/azure/cognitive-services/face/"
     },
     "paths": {
         "/login": {
@@ -118,6 +118,9 @@
                 "tags": ["FaceApi"],
                 "summary": "Detectar y analizar imágenes",
                 "description": "**Analizar rostros contenidas en la imagen recibida**\n\nDetecta y analiza rostros humanos en imágenes. Este endpoint devuelve el faceId necesario para realizar la verificación de identidad Face to Face o Face to Person",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236"
+                },
                 "parameters": [
                     {
                         "name": "url_image",
@@ -185,6 +188,9 @@
                 "tags": ["FaceApi"],
                 "summary": "Análisis de imágenes",
                 "description": "**Analizar rostros de la imagen recibida** \n\n Permite recibir dos imágenes para analizar y detectar la identidad de una persona mediante reconocimiento Rostro a Rostro",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523a"
+                },
                 "parameters": [
                     {
                         "name": "url_image_1",
@@ -260,6 +266,9 @@
                 "tags": ["FaceApi"],
                 "summary": "Análisis de imágenes",
                 "description": "**Analizar rostros de la imagen recibida** \n\n Permite recibir una imagen para analizar y detectar la identidad de una persona mediante reconocimiento Rostro a Persona. \n\n Es importante que previamente al análisis, crear la respectiva persona, el grupo de personas al que va pertenecer y realizar el respectivo entrenamiento.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523a"
+                },
                 "parameters": [
                     {
                         "name": "url_image",
@@ -344,6 +353,9 @@
                 "tags": ["FaceApi - Person Group"],
                 "summary": "Listar grupo de personas",
                 "description": "**Listar grupo de personas registrados.** \n\nDevuelve un arreglo de los grupos de persona registrados hasta el momento",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395248"
+                },
                 "responses": {
                     "200": {
                         "description": "Request succesfully completed",
@@ -413,6 +425,9 @@
                 "tags": ["FaceApi - Person Group"],
                 "summary": "Crear grupo de personas",
                 "description": "**Registrar y crear un grupo de personas (Person Group)** \n\n Registrar grupo de personas.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395244"
+                },
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -506,8 +521,11 @@
             },
             "delete": {
                 "tags": ["FaceApi - Person Group"],
-                "summary": "Crear grupo de personas",
+                "summary": "Eliminar grupo de personas",
                 "description": "**Eliminar grupo de personas** \n\n Eliminar grupo de personas, incluyendo las personas registradas y sus respectivas caras (Faces).",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395245"
+                },
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -570,8 +588,11 @@
         "/faceapi/persongroups/{personGroupId}/train": {
             "post": {
                 "tags": ["FaceApi - Person Group"],
-                "summary": "Entrenar grupo de personas (Person Group)",
-                "description": "**Iniciar entrenamiento del grupo de personas especificado.** \n\n Para iniciar el proceso de entrenamiento debe haber registrado por lo menos una persona en el grupo.",
+                "summary": "Entrenar grupo de personas",
+                "description": "**Iniciar entrenamiento del grupo de personas especificado.** \n\n Para iniciar el proceso de entrenamiento debe haber registrado por lo menos una persona en el grupo. Si la respuesta no devuelve el entrenamiento finalizado, puede revisarlo utilizando el endpoint siguiente.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395249"
+                },
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -581,25 +602,85 @@
                             "type": "string",
                             "description": "ID del grupo de persona provisto por el usuario"
                         }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": true,
-                        "style": "form",
-                        "schema": {
-                            "type": "string",
-                            "description": "Nombre del grupo de persona"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Request succesfully completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request succesfully completed"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "personGroupId": {
+                                                    "type": "string",
+                                                    "example": "persongroupid"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "name person group"
+                                                },
+                                                "userData": {
+                                                    "type": "string",
+                                                    "example": "user data information"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
                     {
-                        "name": "user_data",
-                        "in": "query",
-                        "required": false,
-                        "style": "form",
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/faceapi/persongroups/{personGroupId}/training": {
+            "get": {
+                "tags": ["FaceApi - Person Group"],
+                "summary": "Consultar estado del entrenamiento",
+                "description": "**Consultar estatus del entrenamiento.** \n\nDevuelve información del estatus del entrenamiento del grupo de recursos especificado. En caso de haber errores, estos serán devueltos en la data.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395247"
+                },
+                "parameters": [
+                    {
+                        "name": "personGroupId",
+                        "in": "path",
+                        "required": true,
                         "schema": {
                             "type": "string",
-                            "description": "Información acerca del grupo de persona provista por el usuario"
+                            "description": "ID del grupo de persona provisto por el usuario"
                         }
                     }
                 ],
@@ -669,6 +750,9 @@
                 "tags": ["FaceApi - Person"],
                 "summary": "Crear persona (Person)",
                 "description": "**Crear persona (Person) y asignar a un grupo de personas (Person Group).** \n\nEste endpoint devuelve el ID de la persona (personId) requerida para añadir las respectivas fotografías.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523c"
+                },
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -770,8 +854,11 @@
             },
             "get": {
                 "tags": ["FaceApi - Person"],
-                "summary": "Listar personas (Persons)",
-                "description": "**Añadir rostro al ID de la persona enviada.** \n\nEl endpoint recibe la URL de la imagen que sera persistida y utilizada para futuros análisis y detecciones de rostros.",
+                "summary": "Listar personas",
+                "description": "**Listar personas.** \n\nDevuelve un arreglo de las personas pertenecientes al grupo de personas especificado.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395241"
+                },
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -860,6 +947,9 @@
                 "tags": ["FaceApi - Person"],
                 "summary": "Eliminar persona",
                 "description": "**Elimina una persona existente en un grupo de personas.** \n\nToda la información de la persona sera eliminada (persistedFaceId, userData, personName, etc).",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523d"
+                },
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -943,6 +1033,9 @@
                 "tags": ["FaceApi - Person"],
                 "summary": "Añadir rostro (Face)",
                 "description": "**Añadir rostro al ID de la persona enviada.** \n\nEl endpoint recibe la URL de la imagen que sera persistida y utilizada para entrenar el algoritmo de reconocimiento facial por persona.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523b"
+                },
                 "parameters": [
                     {
                         "name": "personGroupId",
@@ -1031,6 +1124,9 @@
                 "tags": ["FaceApi - Person"],
                 "summary": "Eliminar rostro (Face)",
                 "description": "**Eliminar rostro** \n\nEliminar información registrada de acuerdo al ID proporcionado.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523e"
+                },
                 "parameters": [
                     {
                         "name": "personGroupId",
