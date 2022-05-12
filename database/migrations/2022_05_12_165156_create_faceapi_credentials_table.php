@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('enterprises', function (Blueprint $table) {
+        Schema::create('faceapi_credentials', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
+            $table->string('endpoint');
+            $table->string('subscription_key');
+            $table->string('recognition_model');
+            $table->string('detection_model');
             $table->timestamps();
         });
     }
@@ -28,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('enterprises');
+        Schema::dropIfExists('faceapi_credentials');
     }
 };

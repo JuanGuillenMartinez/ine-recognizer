@@ -13,9 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('persons', function (Blueprint $table) {
+        Schema::create('people', function (Blueprint $table) {
             $table->id();
-            // $table->string();
+            $table->string('father_lastname');
+            $table->string('mother_lastname');
+            $table->string('clave_elector');
+            $table->string('curp');
+            $table->string('gender');
+            $table->string('datebirth');
+            $table->string('ine_url');
             $table->timestamps();
         });
     }

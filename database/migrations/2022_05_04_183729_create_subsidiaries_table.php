@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('subsidiaries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('enterprise_id')->constrained();
+            $table->foreignId('enterprise_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->timestamps();
         });
