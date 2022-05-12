@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('clave_elector');
             $table->string('curp');
             $table->string('gender');
-            $table->string('datebirth');
+            $table->string('birthdate');
             $table->string('ine_url');
             $table->timestamps();
         });
