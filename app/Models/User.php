@@ -41,4 +41,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function credential()
+    {
+        return $this->hasOne(FaceapiCredential::class);
+    }
+
+    public function commerce()
+    {
+        return $this->hasOne(Commerce::class);
+    }
 }
