@@ -1479,7 +1479,7 @@
                 }
             },
             "InternalServerError": {
-                "title": "Token",
+                "title": "InternalServerError",
                 "type": "object",
                 "properties": {
                     "error": {
@@ -1489,7 +1489,7 @@
                 }
             },
             "NoAuth": {
-                "title": "No autenticado",
+                "title": "NoAuth",
                 "type": "object",
                 "properties": {
                     "success": {
