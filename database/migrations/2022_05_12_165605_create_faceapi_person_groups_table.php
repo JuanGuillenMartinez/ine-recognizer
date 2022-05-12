@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('faceapi_person_groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subsidiary_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('commerce_id')->constrained()->cascadeOnDelete();
             $table->string('person_group_id');
             $table->string('name');
             $table->string('user_data')->nullable();
