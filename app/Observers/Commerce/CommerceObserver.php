@@ -72,7 +72,7 @@ class CommerceObserver
         //
     }
 
-    public function storePersonGroup($commerce, $personGroupId)
+    protected function storePersonGroup($commerce, $personGroupId)
     {
         $personGroup = FaceapiPersonGroup::create([
             'commerce_id' => $commerce->id,
