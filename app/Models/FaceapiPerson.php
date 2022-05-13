@@ -8,4 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class FaceapiPerson extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'person_id',
+        'faceapi_person_group_id',
+        'name',
+    ];
+
+    public function faceapiPersonGroup()
+    {
+        return $this->belongsTo(FaceapiPersonGroup::class);
+    }
+
+    public function person()
+    {
+        return $this->belongsTo(Person::class);
+    }
 }

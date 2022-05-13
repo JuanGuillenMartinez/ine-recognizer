@@ -23,4 +23,8 @@ class Person extends Model
     {
         return $this->belongsToMany(Commerce::class);
     }
+
+    public function faceapiPerson() {
+        return $this->hasOne(FaceapiPerson::class);
+    }
 }

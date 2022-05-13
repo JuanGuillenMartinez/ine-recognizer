@@ -20,4 +20,9 @@ class FaceapiPersonGroup extends Model
     {
         return $this->belongsTo(Commerce::class);
     }
+
+    public function faceapiPersons()
+    {
+        return $this->hasMany(FaceapiPerson::class);
+    }
 }
