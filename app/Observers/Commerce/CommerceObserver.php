@@ -3,7 +3,11 @@
 namespace App\Observers\Commerce;
 
 use App\Models\Commerce;
+use App\Models\FaceApi\PersonGroup;
+use App\Models\FaceapiPersonGroup;
 use Illuminate\Support\Facades\Log;
+
+use function PHPUnit\Framework\isNull;
 
 class CommerceObserver
 {
@@ -15,7 +19,13 @@ class CommerceObserver
      */
     public function created(Commerce $commerce)
     {
-        Log::info($commerce);
+        $personGroupId = uniqid(strtolower($commerce->name));
+        $personGroupHelper = new PersonGroup($personGroupId);
+        $response = $personGroupHelper->save($commerce->name);
+        if (isNull($response)) {
+            $personGroup = $this->storePersonGroup($commerce, $personGroupId);
+            Log::info($personGroup);
+        }
     }
 
     /**
@@ -60,5 +70,16 @@ class CommerceObserver
     public function forceDeleted(Commerce $commerce)
     {
         //
+    }
+
+    public function storePersonGroup($commerce, $personGroupId)
+    {
+        $personGroup = FaceapiPersonGroup::create([
+            'commerce_id' => $commerce->id,
+            'person_group_id' => $personGroupId,
+            'name' => $commerce->name,
+            'user_data' => $commerce->user_data,
+        ]);
+        return $personGroup;
     }
 }
