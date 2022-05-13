@@ -18,6 +18,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'commerce_id',
         'name',
         'email',
         'password',
@@ -49,6 +50,6 @@ class User extends Authenticatable
 
     public function commerce()
     {
-        return $this->hasOne(Commerce::class);
+        return $this->belongsTo(Commerce::class);
     }
 }
