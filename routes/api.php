@@ -2,6 +2,7 @@
 
 use App\Helpers\JsonResponse;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Commerce\CommerceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DocumentController;
@@ -26,6 +27,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 
+Route::post('/commerces', [CommerceController::class, 'create']);
+
 //* FACE API ENDPOINTS
 Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
 Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
@@ -49,7 +52,6 @@ Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}/persiste
 //* FORM RECOGNIZER ENDPOINTS
 Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
 Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
-
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
