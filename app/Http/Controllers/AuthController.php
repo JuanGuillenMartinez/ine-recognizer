@@ -15,6 +15,7 @@ class AuthController extends Controller
         $name = $request->get('name');
         $email = $request->get('email');
         $password = $request->get('password');
+        $commerceId = $request->get('commerce_id');
 
         $user = User::where('email', $email)->first();
 
@@ -23,6 +24,7 @@ class AuthController extends Controller
         }
         
         $user = new User([
+            'commerce_id' => $commerceId,
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password)
