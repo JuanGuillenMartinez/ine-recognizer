@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('person_id')->constrained()->cascadeOnDelete();
             $table->foreignId('faceapi_person_group_id')->constrained();
+            $table->string('faceapi_person_id');
             $table->string('name');
             $table->timestamps();
         });
