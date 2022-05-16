@@ -1,14 +1,15 @@
 <?php
 
-use App\Helpers\JsonResponse;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Commerce\CommerceController;
 use Illuminate\Http\Request;
+use App\Helpers\JsonResponse;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\FaceApi\PersonController;
-use App\Http\Controllers\FaceApi\PersonGroupController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FaceApiController;
+use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\Person\PersonController;
+use App\Http\Controllers\Commerce\CommerceController;
+use App\Http\Controllers\FaceApi\PersonGroupController;
+use App\Http\Controllers\FaceApi\PersonController as PersonGroupPersonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +30,9 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 
 Route::post('/commerces', [CommerceController::class, 'create']);
 Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
+Route::post('/commerces/{commerceId}/train', [CommerceController::class, 'train']);
 Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
+Route::post('/persons/{personId}/faces', [PersonController::class, 'addFace']);
 
 //* FACE API ENDPOINTS
 Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
@@ -45,11 +48,11 @@ Route::post('/faceapi/persongroups/{personGroupId}/train', [PersonGroupControlle
 Route::delete('/faceapi/persongroups/{personGroupId}', [PersonGroupController::class, 'delete']);
 
 //* Person
-Route::post('/faceapi/persongroups/{personGroupId}/persons', [PersonController::class, 'create']);
-Route::get('/faceapi/persongroups/{personGroupId}/persons', [PersonController::class, 'listAll']);
-Route::post('/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces', [PersonController::class, 'addFace']);
-Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}', [PersonController::class, 'delete']);
-Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces/{persistedFaceId}', [PersonController::class, 'deleteFace']);
+Route::post('/faceapi/persongroups/{personGroupId}/persons', [PersonGroupPersonController::class, 'create']);
+Route::get('/faceapi/persongroups/{personGroupId}/persons', [PersonGroupPersonController::class, 'listAll']);
+Route::post('/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces', [PersonGroupPersonController::class, 'addFace']);
+Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}', [PersonGroupPersonController::class, 'delete']);
+Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces/{persistedFaceId}', [PersonGroupPersonController::class, 'deleteFace']);
 
 //* FORM RECOGNIZER ENDPOINTS
 Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);

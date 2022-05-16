@@ -58,6 +58,14 @@ class CommerceController extends Controller
         ]);
     }
 
+    public function train(Request $request, $commerceId) {
+        $urlArray = $request->images;
+        echo '<pre>';
+        var_dump($urlArray);
+        echo '</pre>';
+        die;
+    }
+
     private function registerPerson($dataExtracted, $ineUrl)
     {
         $searchParams = [
