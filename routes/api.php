@@ -32,7 +32,7 @@ Route::post('/commerces', [CommerceController::class, 'create']);
 Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
 Route::post('/commerces/{commerceId}/train', [CommerceController::class, 'train']);
 Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
-Route::post('/persons/{personId}/faces', [PersonController::class, 'addFace']);
+Route::post('/commerces/{commerceId}/persons/{personId}/faces', [PersonController::class, 'addFace']);
 
 //* FACE API ENDPOINTS
 Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
