@@ -28,6 +28,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 
 Route::post('/commerces', [CommerceController::class, 'create']);
+Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
 
 //* FACE API ENDPOINTS
 Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
