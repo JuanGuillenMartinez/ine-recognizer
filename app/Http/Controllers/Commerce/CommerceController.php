@@ -50,20 +50,17 @@ class CommerceController extends Controller
         if ($wasAssigned) {
             $person->saveOnAzureFaceApi($commerceId);
         }
-        return JsonResponse::sendResponse([
-            'id' => $person->id,
-            'clave_elector' => $person->clave_elector,
-            'curp' => $person->curp,
-            'faceapi_person_id' => $person->faceapiPerson->faceapi_person_id,
-        ]);
+        $data = $this->formatResponseData($person, $dataExtracted);
+        return JsonResponse::sendResponse($data);
     }
 
-    public function train(Request $request, $commerceId) {
-        $urlArray = $request->images;
-        echo '<pre>';
-        var_dump($urlArray);
-        echo '</pre>';
-        die;
+    public function train(Request $request, $commerceId)
+    {
+        // $urlArray = $request->images;
+        // echo '<pre>';
+        // var_dump($urlArray);
+        // echo '</pre>';
+        // die;
     }
 
     private function registerPerson($dataExtracted, $ineUrl)
@@ -83,5 +80,11 @@ class CommerceController extends Controller
         ];
         $person = Person::firstOrCreate($searchParams, $attributes);
         return $person;
+    }
+
+    private function formatResponseData($person, $dataExtracted)
+    {
+        $dataExtracted['faceapi_person_id'] = $person->faceapiPerson->faceapi_person_id;
+        return $dataExtracted;
     }
 }
