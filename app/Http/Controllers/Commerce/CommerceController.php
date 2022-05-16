@@ -24,6 +24,18 @@ class CommerceController extends Controller
         return JsonResponse::sendError('Ha ocurrido un error al registrar el comercio');
     }
 
+    public function faceapiPersonGroupId($commerceId)
+    {
+        $commerce = Commerce::find($commerceId);
+        if (!isset($commerce)) {
+            return JsonResponse::sendError('El ID proporcionado es incorrecto');
+        }
+        $personGroupId = [
+            'person_group_id' => $commerce->faceapiPersonGroup->person_group_id,
+        ];
+        return JsonResponse::sendResponse($personGroupId);
+    }
+
     public function addPerson(Request $request, $commerceId)
     {
         $commerce = Commerce::find($commerceId);

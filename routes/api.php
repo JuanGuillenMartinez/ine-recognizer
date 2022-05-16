@@ -29,6 +29,7 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 
 Route::post('/commerces', [CommerceController::class, 'create']);
 Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
+Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
 
 //* FACE API ENDPOINTS
 Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
