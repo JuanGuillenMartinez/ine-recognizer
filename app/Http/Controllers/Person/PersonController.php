@@ -33,14 +33,14 @@ class PersonController extends Controller
 
     private function persistFaceResults($response, $personId, $imageUrl)
     {
-        $persistedFaceId = $response->persistedFaceId;
-        if (!isset($persistedFaceId)) {
+        
+        if (!isset($response->persistedFaceId)) {
             return false;
         }
         $faceapiFace = FaceapiFace::create([
             'faceapi_person_id' => $personId,
             'url_image' => $imageUrl,
-            'persisted_face_id' => $persistedFaceId,
+            'persisted_face_id' => $response->persistedFaceId,
         ]);
         return isset($faceapiFace);
     }
