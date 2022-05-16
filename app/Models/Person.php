@@ -30,4 +30,36 @@ class Person extends Model
     {
         return $this->hasOne(FaceapiPerson::class);
     }
+
+    public function assignToCommerce($commerceId)
+    {
+        $commerce = Commerce::find($commerceId);
+        $commercePerson = CommercePerson::where(['commerce_id' => $commerceId, 'person_id' => $this->id])->first();
+        if(!isset($commercePerson)) {
+            $commerce->people()->attach($this->id);
+            return true;
+        }
+        return false;
+    }
+
+    public function saveOnAzureFaceApi($commerceId)
+    {
+        $commerce = Commerce::find($commerceId);
+        $response = $commerce->addToPersonGroup($this->name);
+        $personId = $response->personId;
+        $personGroupId = $commerce->faceapiPersonGroup->id;
+        $this->saveOnFaceapiPeopleTable($personId, $personGroupId);
+        return $response;
+    }
+
+    public function saveOnFaceapiPeopleTable($faceapiPersonId, $faceapiPersonGroupId)
+    {
+        $faceapiPerson = FaceapiPerson::create([
+            'person_id' => $this->id,
+            'faceapi_person_group_id' => $faceapiPersonGroupId,
+            'faceapi_person_id' => $faceapiPersonId,
+            'name' => $this->name,
+        ]);
+        return $faceapiPerson;
+    }
 }

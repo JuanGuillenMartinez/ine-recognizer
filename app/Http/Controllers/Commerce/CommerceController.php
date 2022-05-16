@@ -28,16 +28,25 @@ class CommerceController extends Controller
     {
         $commerce = Commerce::find($commerceId);
         $urlIne = $request->photo_url;
-
         if (!isset($commerce)) {
-            return JsonResponse::sendError('El id proporcionado es incorrecto');
+            return JsonResponse::sendError('El ID proporcionado es incorrecto');
         }
-
         $results = AnalyzeDocument::analyzeDocument($urlIne);
         $dataExtracted = $results[0];
-        $person = Person::firstOrCreate([
+        $person = $this->registerPerson($dataExtracted, $urlIne);
+        $wasAssigned = $person->assignToCommerce($commerceId);
+        if ($wasAssigned) {
+            $personGroupPerson = $person->saveOnAzureFaceApi($commerceId);
+        }
+        return JsonResponse::sendResponse($person);
+    }
+
+    private function registerPerson($dataExtracted, $ineUrl)
+    {
+        $searchParams = [
             'clave_elector' => $dataExtracted['clave_elector']
-        ], [
+        ];
+        $attributes = [
             'name' => $dataExtracted['nombre'],
             'father_lastname' => $dataExtracted['apellido_paterno'],
             'mother_lastname' => $dataExtracted['apellido_materno'],
@@ -45,8 +54,9 @@ class CommerceController extends Controller
             'gender' => $dataExtracted['sexo'],
             'birthdate' => $dataExtracted['nacimiento'],
             'address' => $dataExtracted['domicilio'],
-            'ine_url' => $urlIne,
-        ]);
-        return JsonResponse::sendResponse($person);
+            'ine_url' => $ineUrl,
+        ];
+        $person = Person::firstOrCreate($searchParams, $attributes);
+        return $person;
     }
 }
