@@ -36,9 +36,14 @@ class CommerceController extends Controller
         $person = $this->registerPerson($dataExtracted, $urlIne);
         $wasAssigned = $person->assignToCommerce($commerceId);
         if ($wasAssigned) {
-            $personGroupPerson = $person->saveOnAzureFaceApi($commerceId);
+            $person->saveOnAzureFaceApi($commerceId);
         }
-        return JsonResponse::sendResponse($person);
+        return JsonResponse::sendResponse([
+            'id' => $person->id,
+            'clave_elector' => $person->clave_elector,
+            'curp' => $person->curp,
+            'faceapi_person_id' => $person->faceapiPerson->faceapi_person_id,
+        ]);
     }
 
     private function registerPerson($dataExtracted, $ineUrl)
