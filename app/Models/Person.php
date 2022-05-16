@@ -10,13 +10,15 @@ class Person extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'father_lastname',
         'mother_lastname',
-        'elector',
+        'clave_elector',
         'curp',
         'gender',
         'birthdate',
         'ine_url',
+        'address',
     ];
 
     public function commerces()
@@ -24,7 +26,8 @@ class Person extends Model
         return $this->belongsToMany(Commerce::class);
     }
 
-    public function faceapiPerson() {
+    public function faceapiPerson()
+    {
         return $this->hasOne(FaceapiPerson::class);
     }
 }
