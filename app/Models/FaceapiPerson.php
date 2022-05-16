@@ -12,6 +12,7 @@ class FaceapiPerson extends Model
     protected $fillable = [
         'person_id',
         'faceapi_person_group_id',
+        'faceapi_person_id',
         'name',
     ];
 
