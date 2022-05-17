@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Commerce;
 
-use App\Helpers\AnalyzeDocument;
-use App\Helpers\JsonResponse;
-use App\Http\Controllers\Controller;
-use App\Models\Commerce;
 use App\Models\Person;
+use App\Models\Commerce;
+use App\Models\FaceapiFace;
 use Illuminate\Http\Request;
+use App\Helpers\JsonResponse;
+use App\Helpers\AnalyzeDocument;
+use App\Helpers\FaceApiRequest;
+use App\Http\Controllers\Controller;
+use App\Models\IneResult;
 
 class CommerceController extends Controller
 {
@@ -46,21 +49,20 @@ class CommerceController extends Controller
         $results = AnalyzeDocument::analyzeDocument($urlIne);
         $dataExtracted = $results[0];
         $person = $this->registerPerson($dataExtracted, $urlIne);
+        $detectFaceResults = $this->detectFacesOnIne($person, $urlIne);
         $wasAssigned = $person->assignToCommerce($commerceId);
-        if ($wasAssigned) {
-            $person->saveOnAzureFaceApi($commerceId);
+        // if (!$wasAssigned) {
+        //     return JsonResponse::sendResponse($data);
+        // }
+        $person->saveOnAzureFaceApi($commerceId);
+        $persistedFaceResponse = $person->addFaceToPersonOnAzure($detectFaceResults, $commerceId, $urlIne);
+        if (isset($persistedFaceResponse->error)) {
+            $error = $persistedFaceResponse->error;
+            return JsonResponse::sendError($error->code, 400, $error->message);
         }
+        $commerce->train();
         $data = $this->formatResponseData($person, $dataExtracted);
         return JsonResponse::sendResponse($data);
-    }
-
-    public function train(Request $request, $commerceId)
-    {
-        // $urlArray = $request->images;
-        // echo '<pre>';
-        // var_dump($urlArray);
-        // echo '</pre>';
-        // die;
     }
 
     private function registerPerson($dataExtracted, $ineUrl)
@@ -86,5 +88,29 @@ class CommerceController extends Controller
     {
         $dataExtracted['faceapi_person_id'] = $person->faceapiPerson->faceapi_person_id;
         return $dataExtracted;
+    }
+
+    private function detectFacesOnIne($person, $urlImage)
+    {
+        $personId = $person->id;
+        $faceapiRequest = new FaceApiRequest();
+        $results = $faceapiRequest->detect($urlImage);
+        $results = $this->persistFaceIneResults($personId, $urlImage, $results);
+        return $results;
+    }
+
+    protected function persistFaceIneResults($personId, $urlImage, $results)
+    {
+        $faceRectangle = $results->faceRectangle;
+        $ineResult = IneResult::create([
+            'person_id' => $personId,
+            'url_image' => $urlImage,
+            'faceId' => $results->faceId,
+            'top' => $faceRectangle->top,
+            'left' => $faceRectangle->left,
+            'width' => $faceRectangle->width,
+            'height' => $faceRectangle->height,
+        ]);
+        return $ineResult;
     }
 }

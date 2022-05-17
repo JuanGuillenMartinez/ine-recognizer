@@ -32,9 +32,12 @@ class PersonGroupPerson
         return json_decode($response);
     }
 
-    public function addFace($personId, $imageUrl, $userData = '')
+    public function addFace($personId, $imageUrl, $targetFace = null, $userData = '')
     {
         $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons/{$personId}/persistedFaces?userData={$userData}&detectionModel={$this->detectionModel}";
+        if(isset($targetFace)) {
+            $endpoint = $endpoint . '&targetFace=' . $targetFace;
+        }
         $response = Http::withHeaders($this->headers)->post($endpoint, [
             'url' => $imageUrl,
         ]);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\FaceApi\PersonGroup;
 use App\Models\FaceApi\PersonGroupPerson;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -31,11 +32,22 @@ class Commerce extends Model
         return $this->hasOne(FaceapiPersonGroup::class);
     }
 
+    public function personGroupId()
+    {
+        return $this->faceapiPersonGroup->person_group_id;
+    }
+
     public function addToPersonGroup($name)
     {
         $personGroupId = $this->faceapiPersonGroup->person_group_id;
         $personGroupPerson = new PersonGroupPerson($personGroupId);
         $results = $personGroupPerson->save($name);
         return $results;
+    }
+
+    public function train() {
+        $personGroupId = $this->personGroupId();
+        $personGroup = new PersonGroup($personGroupId);
+        $personGroup->train();
     }
 }
