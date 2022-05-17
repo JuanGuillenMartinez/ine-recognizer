@@ -27,7 +27,10 @@ class FaceApiRequest
             'url' => $urlImage,
         ]);
         $jsonResponse = json_decode($response->body());
-        return $jsonResponse[0];
+        if (!isset($jsonResponse->error)) {
+            return $jsonResponse[0];
+        }
+        return $jsonResponse;
     }
 
     public function verifyFaceToFace($image1, $image2)
@@ -43,9 +46,13 @@ class FaceApiRequest
         return $jsonResponse;
     }
 
-    public function verifyFaceToPerson($urlImage, $personGroupId, $personId) {
+    public function verifyFaceToPerson($urlImage, $personGroupId, $personId)
+    {
         $verifyUrl = "{$this->baseUrl}/verify";
         $response = $this->detect($urlImage);
+        if (isset($response->error)) {
+            return (object) $response;
+        }
         $faceId = $response->faceId;
         $response = Http::withHeaders($this->headers)->post($verifyUrl, [
             'faceId' => $faceId,

@@ -34,8 +34,7 @@ Route::post('/commerces', [CommerceController::class, 'create']);
 Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
 Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
 Route::get('/commerces/{commerceId}/persons/{curp}', [PersonController::class, 'personInformation']);
-Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyze']);
-// Route::post('/commerces/{commerceId}/persons/{personId}/faces', [PersonController::class, 'addFace']);
+Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson']);
 
 //* FACE API ENDPOINTS
 Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
