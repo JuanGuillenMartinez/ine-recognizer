@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Commerce;
 
 use App\Models\Person;
 use App\Models\Commerce;
-use App\Models\FaceapiFace;
 use Illuminate\Http\Request;
 use App\Helpers\JsonResponse;
 use App\Helpers\AnalyzeDocument;
@@ -51,9 +50,9 @@ class CommerceController extends Controller
         $person = $this->registerPerson($dataExtracted, $urlIne);
         $detectFaceResults = $this->detectFacesOnIne($person, $urlIne);
         $wasAssigned = $person->assignToCommerce($commerceId);
-        // if (!$wasAssigned) {
-        //     return JsonResponse::sendResponse($data);
-        // }
+        if (!$wasAssigned) {
+            return JsonResponse::sendResponse('La persona ya ha sido registrada a este comercio anteriormente');
+        }
         $person->saveOnAzureFaceApi($commerceId);
         $persistedFaceResponse = $person->addFaceToPersonOnAzure($detectFaceResults, $commerceId, $urlIne);
         if (isset($persistedFaceResponse->error)) {
