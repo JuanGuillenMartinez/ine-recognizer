@@ -20,7 +20,7 @@ class CommerceObserver
     public function created(Commerce $commerce)
     {
         $uniqid = uniqid($commerce->name);
-        $personGroupId = str_replace(" ", "", $uniqid);
+        $personGroupId = strtolower(str_replace(" ", "", $uniqid));
         $personGroupHelper = new PersonGroup($personGroupId);
         $response = $personGroupHelper->save($commerce->name);
         if (isNull($response)) {

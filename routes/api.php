@@ -28,11 +28,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 
+//* IMPORTANT ENDPOINTS
+//* Commerces
 Route::post('/commerces', [CommerceController::class, 'create']);
 Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
-Route::post('/commerces/{commerceId}/train', [CommerceController::class, 'train']);
 Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
-Route::post('/commerces/{commerceId}/persons/{personId}/faces', [PersonController::class, 'addFace']);
+Route::get('/commerces/{commerceId}/persons/{curp}', [PersonController::class, 'personInformation']);
+Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyze']);
+// Route::post('/commerces/{commerceId}/persons/{personId}/faces', [PersonController::class, 'addFace']);
 
 //* FACE API ENDPOINTS
 Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);

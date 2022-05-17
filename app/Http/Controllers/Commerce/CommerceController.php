@@ -49,12 +49,9 @@ class CommerceController extends Controller
         $dataExtracted = $results[0];
         $person = $this->registerPerson($dataExtracted, $urlIne);
         $detectFaceResults = $this->detectFacesOnIne($person, $urlIne);
-        $wasAssigned = $person->assignToCommerce($commerceId);
-        if (!$wasAssigned) {
-            return JsonResponse::sendResponse('La persona ya ha sido registrada a este comercio anteriormente');
-        }
-        $person->saveOnAzureFaceApi($commerceId);
-        $persistedFaceResponse = $person->addFaceToPersonOnAzure($detectFaceResults, $commerceId, $urlIne);
+        $faceapiPerson = $commerce->addToPersonGroup($person);
+        $persistedFaceResponse = $faceapiPerson->addFace($detectFaceResults, $urlIne);
+        // $persistedFaceResponse = $commerce->addFaceToPerson($detectFaceResults, $faPerson, $urlIne);
         if (isset($persistedFaceResponse->error)) {
             $error = $persistedFaceResponse->error;
             return JsonResponse::sendError($error->code, 400, $error->message);

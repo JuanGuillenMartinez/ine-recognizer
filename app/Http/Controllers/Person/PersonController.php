@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Person;
 
+use App\Helpers\FaceApiRequest;
+use App\Helpers\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Models\CommercePerson;
 use App\Models\FaceApi\PersonGroupPerson;
@@ -21,6 +23,17 @@ class PersonController extends Controller
         return $results;
     }
 
+    public function analyze(Request $request, $commerceId, $personId)
+    {
+        // $imageUrl = $request->image_url;
+        // $commercePerson = CommercePerson::
+        // if (!isset($person)) {
+        //     return JsonResponse::sendError('La persona no se encuentra registrada en el sistema');
+        // }
+        // $faceapiRequest = new FaceApiRequest();
+        // $faceapiRequest->verifyFaceToPerson($imageUrl, );
+    }
+
     private function addFaceOnAzure($commerce, $person, $imageUrl)
     {
         $personId = $person->faceapiPerson->faceapi_person_id;
@@ -33,7 +46,7 @@ class PersonController extends Controller
 
     private function persistFaceResults($response, $personId, $imageUrl)
     {
-        
+
         if (!isset($response->persistedFaceId)) {
             return false;
         }
