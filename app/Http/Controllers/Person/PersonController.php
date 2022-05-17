@@ -13,48 +13,5 @@ use Illuminate\Http\Request;
 
 class PersonController extends Controller
 {
-    public function addFace(Request $request, $commerceId, $personId)
-    {
-        $imageUrl = $request->url_photo;
-        $commercePerson = CommercePerson::where(['commerce_id' => $commerceId, 'person_id' => $personId])->first();
-        $commerce = $commercePerson->commerce;
-        $person = $commercePerson->person;
-        $results = $this->addFaceOnAzure($commerce, $person, $imageUrl);
-        return $results;
-    }
-
-    public function analyze(Request $request, $commerceId, $personId)
-    {
-        // $imageUrl = $request->image_url;
-        // $commercePerson = CommercePerson::
-        // if (!isset($person)) {
-        //     return JsonResponse::sendError('La persona no se encuentra registrada en el sistema');
-        // }
-        // $faceapiRequest = new FaceApiRequest();
-        // $faceapiRequest->verifyFaceToPerson($imageUrl, );
-    }
-
-    private function addFaceOnAzure($commerce, $person, $imageUrl)
-    {
-        $personId = $person->faceapiPerson->faceapi_person_id;
-        $personGroupId = $commerce->faceapiPersonGroup->person_group_id;
-        $faceapiPerson = new PersonGroupPerson($personGroupId);
-        $response = $faceapiPerson->addFace($personId, $imageUrl);
-        $this->persistFaceResults($response, $person->faceapiPerson->id, $imageUrl);
-        return $response;
-    }
-
-    private function persistFaceResults($response, $personId, $imageUrl)
-    {
-
-        if (!isset($response->persistedFaceId)) {
-            return false;
-        }
-        $faceapiFace = FaceapiFace::create([
-            'faceapi_person_id' => $personId,
-            'url_image' => $imageUrl,
-            'persisted_face_id' => $response->persistedFaceId,
-        ]);
-        return isset($faceapiFace);
-    }
+    
 }
