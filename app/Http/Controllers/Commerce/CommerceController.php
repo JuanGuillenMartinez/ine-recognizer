@@ -51,13 +51,12 @@ class CommerceController extends Controller
         $detectFaceResults = $this->detectFacesOnIne($person, $urlIne);
         $faceapiPerson = $commerce->addToPersonGroup($person);
         $persistedFaceResponse = $faceapiPerson->addFace($detectFaceResults, $urlIne);
-        // $persistedFaceResponse = $commerce->addFaceToPerson($detectFaceResults, $faPerson, $urlIne);
         if (isset($persistedFaceResponse->error)) {
             $error = $persistedFaceResponse->error;
             return JsonResponse::sendError($error->code, 400, $error->message);
         }
         $commerce->train();
-        $data = $this->formatResponseData($person, $dataExtracted);
+        $data = $this->formatResponseData($faceapiPerson, $dataExtracted);
         return JsonResponse::sendResponse($data);
     }
 
@@ -80,9 +79,10 @@ class CommerceController extends Controller
         return $person;
     }
 
-    private function formatResponseData($person, $dataExtracted)
+    private function formatResponseData($faceapiPerson, $dataExtracted)
     {
-        $dataExtracted['faceapi_person_id'] = $person->faceapiPerson->faceapi_person_id;
+        $dataExtracted['person_id'] = $faceapiPerson->id;
+        $dataExtracted['faceapi_person_id'] = $faceapiPerson->faceapi_person_id;
         return $dataExtracted;
     }
 
