@@ -22,48 +22,55 @@ use App\Http\Controllers\FaceApi\PersonController as PersonGroupPersonController
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::post('/auth/login', [AuthController::class, 'login']);
-Route::post('/auth/register', [AuthController::class, 'register']);
-
-//* IMPORTANT ENDPOINTS
-//* Commerces
-Route::post('/commerces', [CommerceController::class, 'create']);
-Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
-Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
-Route::post('/commerces/{commerceId}/search/persons', [PersonController::class, 'personInformation']);
-Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson']);
-
-//* FACE API ENDPOINTS
-Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
-Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
-Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
-
-//* FACE API TRAINING ENDPOINTS
-//* Person group
-Route::get('/faceapi/persongroups', [PersonGroupController::class, 'list']);
-Route::post('/faceapi/persongroups/{personGroupId}', [PersonGroupController::class, 'create']);
-Route::get('/faceapi/persongroups/{personGroupId}/training', [PersonGroupController::class, 'trainingStatus']);
-Route::post('/faceapi/persongroups/{personGroupId}/train', [PersonGroupController::class, 'train']);
-Route::delete('/faceapi/persongroups/{personGroupId}', [PersonGroupController::class, 'delete']);
-
-//* Person
-Route::post('/faceapi/persongroups/{personGroupId}/persons', [PersonGroupPersonController::class, 'create']);
-Route::get('/faceapi/persongroups/{personGroupId}/persons', [PersonGroupPersonController::class, 'listAll']);
-Route::post('/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces', [PersonGroupPersonController::class, 'addFace']);
-Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}', [PersonGroupPersonController::class, 'delete']);
-Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces/{persistedFaceId}', [PersonGroupPersonController::class, 'deleteFace']);
-
-//* FORM RECOGNIZER ENDPOINTS
-Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
-Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
-
 Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
+    /** 
+        REGISTER USER ENDPOINT 
+     */
+    Route::post('/auth/register', [AuthController::class, 'register']);
 
+    /** 
+        REGISTER COMMERCE ENDPOINT 
+     */
+    Route::post('/commerces', [CommerceController::class, 'create']);
 });
 
-Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
-
+Route::middleware(['auth:sanctum', 'role:user'])->group(function () { 
+    /** 
+        COMMERCE ENDPOINTS 
+     */
+    Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
+    Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
+    Route::post('/commerces/{commerceId}/search/persons', [PersonController::class, 'personInformation']);
+    Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson']);
+    
+    /** 
+     FACE API ENDPOINTS 
+     */
+    Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
+    Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
+    Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
+    
+    /** 
+     FORM RECOGNIZER ENDPOINTS 
+     */
+    Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
+    Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
 });
+
+/** 
+    PUBLIC LOGIN ENDPPOINT 
+ */
+Route::post('/auth/login', [AuthController::class, 'login']);
+
+
+
+//// Route::get('/faceapi/persongroups', [PersonGroupController::class, 'list']);
+//// Route::post('/faceapi/persongroups/{personGroupId}', [PersonGroupController::class, 'create']);
+//// Route::get('/faceapi/persongroups/{personGroupId}/training', [PersonGroupController::class, 'trainingStatus']);
+//// Route::post('/faceapi/persongroups/{personGroupId}/train', [PersonGroupController::class, 'train']);
+//// Route::delete('/faceapi/persongroups/{personGroupId}', [PersonGroupController::class, 'delete']);
+//// Route::post('/faceapi/persongroups/{personGroupId}/persons', [PersonGroupPersonController::class, 'create']);
+//// Route::get('/faceapi/persongroups/{personGroupId}/persons', [PersonGroupPersonController::class, 'listAll']);
+//// Route::post('/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces', [PersonGroupPersonController::class, 'addFace']);
+//// Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}', [PersonGroupPersonController::class, 'delete']);
+//// Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}/persistedFaces/{persistedFaceId}', [PersonGroupPersonController::class, 'deleteFace']);
