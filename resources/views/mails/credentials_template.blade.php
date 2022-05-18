@@ -16,9 +16,12 @@
         <li>Comercio: {{ $user->commerce->name }}</li>
     </ul>
     @endif
-    <p>Correo registrado</p>
+    <p>Credenciales</p>
     <ul>
         <li>Correo electrónico: {{ $user->email }}</li>
+        @if(isset($user->default_pass))
+        <li>Contraseña: {{ $user->default_pass }}</li>
+        @endif
         <li>Información generada: {{ $user->updated_at }}</li>
     </ul>
     <p>Puedes revisar la siguiente documentación para mas información:</p>
