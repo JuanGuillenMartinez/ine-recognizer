@@ -9,11 +9,13 @@
 
 <body>
     <p>Hola! Hemos recibido su solicitud y le informamos que ha sido aceptada.</p>
+    @if(isset($user->commerce))
     <p>Información del comercio</p>
     <ul>
         <li>ID del Comercio: {{ $user->commerce->id }}</li>
         <li>Comercio: {{ $user->commerce->name }}</li>
     </ul>
+    @endif
     <p>Correo registrado</p>
     <ul>
         <li>Correo electrónico: {{ $user->email }}</li>
