@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\JsonResponse;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Helpers\JsonResponse;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,10 +20,10 @@ class AuthController extends Controller
 
         $user = User::where('email', $email)->first();
 
-        if(isset($user)) {
+        if (isset($user)) {
             return JsonResponse::sendError('Ya se encuentra registrado el correo electrónico proporcionado');
         }
-        
+
         $user = new User([
             'commerce_id' => $commerceId,
             'name' => $name,
@@ -31,6 +32,8 @@ class AuthController extends Controller
         ]);
 
         if ($user->save()) {
+            $role = Role::where('name', 'user')->first();
+            $user->assignRole($role);
             return JsonResponse::sendResponse([
                 'email' => $user->email,
             ], 'El usuario ha sido registrado correctamente');

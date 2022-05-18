@@ -60,6 +60,10 @@ Route::delete('/faceapi/persongroups/{personGroupId}/persons/{personId}/persiste
 Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
 Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
+
+});
+
+Route::middleware(['auth:sanctum', 'role:user'])->group(function () {
 
 });
