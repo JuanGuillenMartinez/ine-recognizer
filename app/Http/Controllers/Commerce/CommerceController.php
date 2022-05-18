@@ -2,22 +2,30 @@
 
 namespace App\Http\Controllers\Commerce;
 
+use App\Models\User;
 use App\Models\Person;
 use App\Models\Commerce;
+use App\Models\IneResult;
 use Illuminate\Http\Request;
 use App\Helpers\JsonResponse;
-use App\Helpers\AnalyzeDocument;
 use App\Helpers\FaceApiRequest;
+use App\Helpers\AnalyzeDocument;
 use App\Http\Controllers\Controller;
-use App\Models\IneResult;
+use Illuminate\Support\Facades\Hash;
 
 class CommerceController extends Controller
 {
     public function create(Request $request)
     {
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
+        $user->assignRole('user');
         $attributes = [
-            'user_id' => $request->input('user_id'),
-            'name' => $request->input('name'),
+            'user_id' => $user->id,
+            'name' => $request->name,
         ];
         $commerce = new Commerce($attributes);
         if ($commerce->save()) {

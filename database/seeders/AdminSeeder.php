@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Commerce;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -17,10 +18,15 @@ class AdminSeeder extends Seeder
     public function run()
     {
         $user = $this->createUser();
+        Commerce::create([
+            'user_id' => $user->id,
+            'name' => $user->name,
+        ]);
         $this->assignRole($user);
     }
 
-    private function createUser() {
+    private function createUser()
+    {
         return User::create([
             'name' => env('ADMIN_USER'),
             'email' => env('ADMIN_EMAIL'),
@@ -28,7 +34,8 @@ class AdminSeeder extends Seeder
         ]);
     }
 
-    private function assignRole($user) {
+    private function assignRole($user)
+    {
         $superAdminRole = Role::where('name', 'super-admin')->first();
         $user->assignRole($superAdminRole);
         return $user;

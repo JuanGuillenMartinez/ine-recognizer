@@ -3,10 +3,12 @@
 namespace App\Observers\Commerce;
 
 use App\Models\Commerce;
-use App\Models\FaceApi\PersonGroup;
 use App\Models\FaceapiPersonGroup;
+use App\Models\FaceApi\PersonGroup;
 use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\User\SendCredentialsMail;
 use function PHPUnit\Framework\isNull;
 
 class CommerceObserver
@@ -25,6 +27,7 @@ class CommerceObserver
         $response = $personGroupHelper->save($commerce->name);
         if (isNull($response)) {
             $personGroup = $this->storePersonGroup($commerce, $personGroupId);
+            Mail::to($commerce->user->email)->send(new SendCredentialsMail($commerce->user));
             Log::info($personGroup);
         }
     }
