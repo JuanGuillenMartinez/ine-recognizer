@@ -25,7 +25,9 @@ class PersonController extends Controller
         $faceapiRequest = new FaceApiRequest();
         $response = $faceapiRequest->verifyFaceToPerson($urlImage, $personGroup->person_group_id, $faceapiPerson->faceapi_person_id);
         $verifyResults = $this->persistVerifyResults($faceapiPerson, $response, $urlImage);
-        TrainPersonWithPhotoSended::dispatch($faceapiPerson, $verifyResults);
+        if ($response->isIdentical) {
+            TrainPersonWithPhotoSended::dispatch($faceapiPerson, $verifyResults);
+        }
         return JsonResponse::sendResponse($response);
     }
 
