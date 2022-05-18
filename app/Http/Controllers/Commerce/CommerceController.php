@@ -30,7 +30,11 @@ class CommerceController extends Controller
         ];
         $commerce = new Commerce($attributes);
         if ($commerce->save()) {
-            return JsonResponse::sendResponse($commerce, 'Comercio registrado correctamente');
+            return JsonResponse::sendResponse([
+                'commerce_id' => $commerce->id,
+                'name' => $commerce->name,
+                'email' => $commerce->user->email,
+            ], 'Comercio registrado correctamente');
         }
         return JsonResponse::sendError('Ha ocurrido un error al registrar el comercio');
     }

@@ -8,7 +8,9 @@ use App\Models\Person;
 use Illuminate\Http\Request;
 use App\Models\FaceapiPerson;
 use App\Http\Controllers\Controller;
+use App\Jobs\TrainPersonWithPhotoSended;
 use App\Models\Commerce;
+use App\Models\FaceapiVerifyResult;
 
 class PersonController extends Controller
 {
@@ -22,6 +24,8 @@ class PersonController extends Controller
         $personGroup = $faceapiPerson->faceapiPersonGroup;
         $faceapiRequest = new FaceApiRequest();
         $response = $faceapiRequest->verifyFaceToPerson($urlImage, $personGroup->person_group_id, $faceapiPerson->faceapi_person_id);
+        $verifyResults = $this->persistVerifyResults($faceapiPerson, $response, $urlImage);
+        TrainPersonWithPhotoSended::dispatch($faceapiPerson, $verifyResults);
         return JsonResponse::sendResponse($response);
     }
 
@@ -41,5 +45,16 @@ class PersonController extends Controller
         return JsonResponse::sendResponse([
             'person_id' => $facePerson->id,
         ]);
+    }
+
+    private function persistVerifyResults($azurePerson, $response, $urlImage)
+    {
+        $verifyResults = FaceapiVerifyResult::create([
+            'faceapi_person_id' => $azurePerson->id,
+            'url_image' => $urlImage,
+            'confidence' => $response->confidence,
+            'isIdentical' => $response->isIdentical,
+        ]);
+        return $verifyResults;
     }
 }
