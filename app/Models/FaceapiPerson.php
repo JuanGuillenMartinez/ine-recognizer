@@ -27,11 +27,18 @@ class FaceapiPerson extends Model
         return $this->belongsTo(Person::class);
     }
 
-    public function personGroupId() {
+    public function azureVerifyResults()
+    {
+        return $this->hasMany(FaceapiVerifyResult::class);
+    }
+
+    public function personGroupId()
+    {
         return $this->faceapiPersonGroup->person_group_id;
     }
 
-    public function addFace($detectFaceResults, $urlPhoto) {
+    public function addFace($detectFaceResults, $urlPhoto)
+    {
         $targetFace = "{$detectFaceResults->left},{$detectFaceResults->top},{$detectFaceResults->width},{$detectFaceResults->height}";
         $faceapiPersonId = $this->faceapi_person_id;
         $personGroupPerson = new PersonGroupPerson($this->personGroupId());
