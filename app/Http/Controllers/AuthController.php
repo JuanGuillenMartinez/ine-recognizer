@@ -25,7 +25,6 @@ class AuthController extends Controller
         }
 
         $user = new User([
-            'commerce_id' => $commerceId,
             'name' => $name,
             'email' => $email,
             'password' => Hash::make($password)
