@@ -116,10 +116,10 @@
                 }
             }
         },
-        "/analyze/documents/ine/front": {
+        "/commerces/": {
             "post": {
                 "tags": ["Form Recognizer"],
-                "summary": "Extraer información del INE",
+                "summary": "",
                 "description": "**Extraer información de la parte delantera del documento INE**\n\nDetecta y extrae información en formato de pares clave-valor de una imagen tomada de la credencial de elector. La imagen debe tener un peso menor a 2mb.",
                 "parameters": [
                     {

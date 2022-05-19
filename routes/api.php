@@ -34,7 +34,7 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
     Route::post('/commerces', [CommerceController::class, 'create']);
 });
 
-Route::middleware(['auth:sanctum', 'role:user'])->group(function () { 
+Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () { 
     /** 
         COMMERCE ENDPOINTS 
      */

@@ -11,6 +11,7 @@ use App\Helpers\JsonResponse;
 use App\Helpers\FaceApiRequest;
 use App\Helpers\AnalyzeDocument;
 use App\Http\Controllers\Controller;
+use App\Models\FaceapiPerson;
 use Illuminate\Support\Facades\Hash;
 
 class CommerceController extends Controller
@@ -54,21 +55,28 @@ class CommerceController extends Controller
     public function addPerson(Request $request, $commerceId)
     {
         $commerce = Commerce::find($commerceId);
+        $personGroup = $commerce->faceapiPersonGroup;
         $urlIne = $request->photo_url;
         if (!isset($commerce)) {
             return JsonResponse::sendError('El ID proporcionado es incorrecto');
         }
         $results = AnalyzeDocument::analyzeDocument($urlIne);
         $dataExtracted = $results[0];
-        $person = $this->registerPerson($dataExtracted, $urlIne);
-        $detectFaceResults = $this->detectFacesOnIne($person, $urlIne);
-        $faceapiPerson = $commerce->addToPersonGroup($person);
-        $persistedFaceResponse = $faceapiPerson->addFace($detectFaceResults, $urlIne);
-        if (isset($persistedFaceResponse->error)) {
-            $error = $persistedFaceResponse->error;
-            return JsonResponse::sendError($error->code, 400, $error->message);
+        $person = Person::where('clave_elector', $dataExtracted['clave_elector'])->first();
+        if (!isset($person)) {
+            $person = $this->registerPerson($dataExtracted, $urlIne);
         }
-        $commerce->train();
+        $faceapiPerson = FaceapiPerson::where(['person_id' => $person->id, 'faceapi_person_group_id' => $personGroup->id])->first();
+        if (!isset($faceapiPerson)) {
+            $detectFaceResults = $this->detectFacesOnIne($person, $urlIne);
+            $faceapiPerson = $commerce->addToPersonGroup($person);
+            $persistedFaceResponse = $faceapiPerson->addFace($detectFaceResults, $urlIne);
+            if (isset($persistedFaceResponse->error)) {
+                $error = $persistedFaceResponse->error;
+                return JsonResponse::sendError($error->code, 400, $error->message);
+            }
+            $commerce->train();
+        }
         $data = $this->formatResponseData($faceapiPerson, $dataExtracted);
         return JsonResponse::sendResponse($data);
     }
@@ -94,9 +102,10 @@ class CommerceController extends Controller
 
     private function formatResponseData($faceapiPerson, $dataExtracted)
     {
-        $dataExtracted['person_id'] = $faceapiPerson->id;
-        $dataExtracted['faceapi_person_id'] = $faceapiPerson->faceapi_person_id;
-        return $dataExtracted;
+        $personInformation['person'] = $dataExtracted;
+        $personInformation['person_id'] = $faceapiPerson->id;
+        $personInformation['faceapi_person_id'] = $faceapiPerson->faceapi_person_id;
+        return $personInformation;
     }
 
     private function detectFacesOnIne($person, $urlImage)
