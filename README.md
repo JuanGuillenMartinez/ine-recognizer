@@ -75,6 +75,9 @@ Para garantizar el correcto funcionamiento del servicio, se deben configurar las
 Es importante configurar un proveedor de correos electrónicos para realizar el envió de credenciales a cada uno de los comercios que sean registrados. Esto incluye la configuración de las variables de entorno relacionadas al envió de emails en Laravel. 
 
 ## Instalación
+Clonando el repositorio
+
+    git clone https://github.com/JuanGuillenMartinez/ine-recognizer.git
 Primero hay que instalar todas las librerías necesarias para el correcto funcionamiento del sistema mediante
 
     composer install
