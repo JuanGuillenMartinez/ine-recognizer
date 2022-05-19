@@ -34,22 +34,21 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
     Route::post('/commerces', [CommerceController::class, 'create']);
 });
 
-Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
-Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
-Route::post('/commerces/{commerceId}/search/persons', [PersonController::class, 'personInformation']);
-Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson']);
-Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () { 
+Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () {
     /** 
-        COMMERCE ENDPOINTS 
+     COMMERCE ENDPOINTS 
      */
-    
+    Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
+    Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
+    Route::post('/commerces/{commerceId}/search/persons', [PersonController::class, 'personInformation']);
+    Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson']);
     /** 
      FACE API ENDPOINTS 
      */
     Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
     Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
     Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
-    
+
     /** 
      FORM RECOGNIZER ENDPOINTS 
      */
