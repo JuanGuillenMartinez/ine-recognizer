@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Recognizer",
-        "description": "",
+        "description": "Este sistema permite registrar distintos comercios para realizar validaciones de identidad mediante el servicio de análisis de rostros proporcionados por Azure FaceAPI.\n\n Como usuario del sistema, tienes a tu disposición la siguiente serie de endpoints.\n\n 1. Para iniciar a utilizar el servicio, debes de autenticarte mediante el endpoint de /auth/login. Este recibe las credenciales proporcionadas por el administrador del sistema via correo electrónico.\n\n 2. Una vez obtenido el bearer token, este debe ser enviado mediante la cabecera 'Authorization' de cada una de las siguientes peticiones. \n\n3. Para dar de alta a una persona en tu comercio, tienes a tu disposición el endpoint de 'Registrar persona', este endpoint recibe unicamente las fotografías de la parte delantera y trasera de la credencial de elector (INE) que sera dado de alta. Este devuelve el ID de la persona utilizado para realizar la verificación de identidad mediante rostros.\n\n4. Una vez ha sido registrada la persona, se puede empezar a realizar la verificación de identidad mediante el ID del comercio al que pertenece, asi como del ID de la persona. Para esto se proporciona el endpoint de 'Verificar identidad'. La confidencialidad devuelta por este endpoint indica los resultados del análisis. Si es mayor que 0.7, la verificación de identidad fue correcta.\n\n Si se desconoce el ID interno de la persona, se puede consultar mediante la CURP obtenida al momento de haber sido registrado.",
         "version": "1.0.0"
     },
     "tags": [
@@ -21,7 +21,7 @@
     ],
     "servers": [
         {
-            "url": "http://127.0.0.1:8000/api"
+            "url": "http://ine.apscreativas.com/api"
         }
     ],
     "externalDocs": {
