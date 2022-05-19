@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\JsonResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -45,6 +47,9 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+        $this->renderable(function(UnauthorizedException $e) {
+            return JsonResponse::sendError('No cuenta con los permisos para realizar la accion', 500);
         });
     }
 }

@@ -485,7 +485,7 @@
                 ]
             }
         },
-        "/commerces/{commerceId}/persons": {
+        "/commerces/{id}/persons": {
             "post": {
                 "tags": ["Commerces"],
                 "summary": "Registrar persona",
@@ -495,12 +495,12 @@
                 },
                 "parameters": [
                     {
-                        "name": "url_image",
-                        "in": "query",
+                        "name": "id",
+                        "in": "path",
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "description": "Primer imagen a ser analizada"
+                            "description": "ID del comercio. Este es recibido al crear el comercio en el sistema."
                         }
                     },
                     {
@@ -509,25 +509,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "description": "Primer imagen a ser analizada"
-                        }
-                    },
-                    {
-                        "name": "person_group_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "ID del grupo de persona a ser analizada"
-                        }
-                    },
-                    {
-                        "name": "person_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "description": "ID de la persona a ser analizada"
+                            "description": "Fotografía del INE del cliente a ser registrado."
                         }
                     }
                 ],
