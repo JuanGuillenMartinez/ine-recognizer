@@ -508,6 +508,15 @@
                             "type": "string",
                             "description": "Fotografía del INE del cliente a ser registrado."
                         }
+                    },
+                    {
+                        "name": "back_photo_url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Fotografía de la parte trasera del INE del cliente a ser registrado."
+                        }
                     }
                 ],
                 "responses": {
