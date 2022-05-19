@@ -29,7 +29,7 @@
         "url": "https://docs.microsoft.com/es-mx/azure/cognitive-services/face/"
     },
     "paths": {
-        "/login": {
+        "/auth/login": {
             "post": {
                 "tags": ["Autenticación"],
                 "summary": "Obtener API Token",
@@ -116,10 +116,10 @@
                 }
             }
         },
-        "/commerces/": {
+        "/analyze/documents/ine/front": {
             "post": {
                 "tags": ["Form Recognizer"],
-                "summary": "",
+                "summary": "Extraer información del INE",
                 "description": "**Extraer información de la parte delantera del documento INE**\n\nDetecta y extrae información en formato de pares clave-valor de una imagen tomada de la credencial de elector. La imagen debe tener un peso menor a 2mb.",
                 "parameters": [
                     {
@@ -490,9 +490,6 @@
                 "tags": ["Commerces"],
                 "summary": "Registrar persona",
                 "description": "**Registra la información de la persona** \n\n Permite asignar una persona al comercio solicitado. Este endpoint recibe una URL de la imagen de la credencial de elector de la persona a registrar. Este devuelve el ID de la persona generada de forma interna utilizado para realizar el análisis de validación de identidad. También devuelve la información extraída del INE.",
-                "externalDocs": {
-                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523a"
-                },
                 "parameters": [
                     {
                         "name": "id",
@@ -504,7 +501,7 @@
                         }
                     },
                     {
-                        "name": "url_image",
+                        "name": "photo_url",
                         "in": "query",
                         "required": true,
                         "schema": {
@@ -529,12 +526,180 @@
                                         "message": {
                                             "type": "string",
                                             "description": "Mensaje de estado de la petición",
-                                            "example": "El análisis ha finalizado correctamente"
+                                            "example": "Request successfully completed"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/PersonAnalyzeResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/commerces/{id}/persons/{person_id}/verify": {
+            "post": {
+                "tags": ["Commerces"],
+                "summary": "Verificar identidad",
+                "description": "**Verificar la identidad de la persona registrada mediante una fotografía** \n\n Permite validar la identidad de las personas registradas al comercio mediante una fotografía del rostro. Este análisis devuelve un valor booleano como resultado del análisis de identidad proporcionado por el servicio de Azure FaceApi junto con el valor de confianza (Este valor se encuentra entre 0 y 1. Valores superiores a 0.7 se consideran como confiables).",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523a"
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del comercio. Este es recibido al crear el comercio en el sistema."
+                        }
+                    },
+                    {
+                        "name": "person_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID de la persona registrada en el sistema. Este ID es devuelto como person_id al ser registrado en el comercio."
+                        }
+                    },
+                    {
+                        "name": "url_image",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "Fotografía del rostro de la persona a ser analizada."
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solicitud realizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request successfully completed"
                                         },
                                         "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/DetectResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/NoAuth"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/commerces/{id}/search/persons": {
+            "post": {
+                "tags": ["Commerces"],
+                "summary": "Obtener ID de la persona",
+                "description": "**Realiza una búsqueda para obtener el ID de la persona** \n\n Permite obtener el ID de la persona registrada en el sistema mediante la curp y el ID del comercio al que se encuentra registrado.",
+                "externalDocs": {
+                    "url": "https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f3039523a"
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "ID del comercio. Este es recibido al crear el comercio en el sistema."
+                        }
+                    },
+                    {
+                        "name": "curp",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "description": "CURP de la persona registrada."
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solicitud realizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "description": "Estatus de la petición",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Mensaje de estado de la petición",
+                                            "example": "Request successfully completed"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "person_id": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                }
                                             }
                                         }
                                     }
@@ -620,6 +785,76 @@
                     "seccion": {
                         "type": "string",
                         "example": "0001"
+                    }
+                }
+            },
+            "PersonAnalyzeResponse": {
+                "type": "object",
+                "properties": {
+                    "person_id": {
+                        "type": "number",
+                        "example": 0
+                    },
+                    "faceapi_person_id": {
+                        "type": "string",
+                        "example": "8b6c4107-0ece-4e8d-a0d8-1f04cd2cf6ac"
+                    },
+                    "person": {
+                        "type": "object",
+                        "properties": {
+                            "sexo": {
+                                "type": "string",
+                                "example": "M"
+                            },
+                            "registro": {
+                                "type": "string",
+                                "example": "2008 01"
+                            },
+                            "vigencia": {
+                                "type": "string",
+                                "example": "2019 - 2029"
+                            },
+                            "apellido_paterno": {
+                                "type": "string",
+                                "example": "GOMEZ"
+                            },
+                            "pais_emision": {
+                                "type": "string",
+                                "example": "MÉXICO"
+                            },
+                            "nacimiento": {
+                                "type": "string",
+                                "example": "05/07/1980"
+                            },
+                            "identificacion": {
+                                "type": "string",
+                                "example": "INSTITUTO NACIONAL ELECTORAL CREDENCIAL PARA VOTAR"
+                            },
+                            "curp": {
+                                "type": "string",
+                                "example": "GOVM800705MCLR01"
+                            },
+                            "nombre": {
+                                "type": "string",
+                                "example": "MARGARITA"
+                            },
+                            "clave_elector": {
+                                "type": "string",
+                                "example": "GMVLMR80070501M100"
+                            },
+                            "domicilio": {
+                                "type": "string",
+                                "example": "VIADUCTO TLALPAN NO. 100 COL. ARENAL TEPEPAN, ALCALDIA TLALPAN. C.P. 14610, CIUDAD DE MEXICO."
+                            },
+                            "apellido_materno": {
+                                "type": "string",
+                                "example": "VELAZQUEZ"
+                            },
+                            "seccion": {
+                                "type": "string",
+                                "example": "0001"
+                            }
+                        }
                     }
                 }
             },
