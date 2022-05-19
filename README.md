@@ -7,58 +7,100 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# INE Recognizer
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Información
+Este servicio proporciona una API fácil de utilizar y configurar para realizar análisis y verificación de rostros, detección y extracción de textos mediante el servicio de Azure FaceAPI. 
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Requerimientos
 
-## Learning Laravel
+- Laravel 9
+- MariaDB 10.4.24
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Servicios de Microsoft Azure
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Azure FaceAPI configurado correctamente
+- Modelo de reconocimiento de Azure Form Recognizer entrenado de acuerdo a las siguientes especificaciones
 
-## Laravel Sponsors
+### Azure Form Recognizer
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+El modelo compuesto utilizado para realizar el reconocimiento de la Identificación Nacional de Elector (INE), debe contener los siguientes modelos diferentes, entrenado cada uno con al menos 5 fotografías diferentes. Este entrenamiento puede ser llevado a cabo mediante Form Recognizer Studio. Este modelo debe ser entrenado mediante entrenamiento de plantillas (Template) y utilizando la Version 3 de [Form Recognizer Custom Models](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/v3-migration-guide).
+> Para mas información sobre como realizar el entrenamiento de los modelos, siga la documentación proporcionada por Microsoft Azure. [Azure Form Recognizer Docs](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/how-to-guides/build-custom-model-v3)
 
-### Premium Partners
+#### 1. Parte delantera del INE
+Asegurarse de entrenar el modelo teniendo en cuenta la existencia de las diferentes versiones de INE expedidas hasta el momento.
+- apellido_materno
+- pais_emision
+- nacimiento
+- curp
+- registro
+- domicilio
+- localidad
+- vigencia
+- identificacion
+- sexo
+- estado
+- nombre
+- seccion
+- municipio
+- apellido_paterno
+- emision
+- clave_elector
+> El JSON generado por el modelo debe contener los atributos exactamente iguales a los descritos anteriormente.
+#### 2. Parte trasera del INE
+Asegurarse de entrenar el modelo teniendo en cuenta la existencia de las diferentes versiones de INE expedidas hasta el momento.
+- identificador_titular
+- identificador_fecha
+- identificador_documento
+> El JSON generado por el modelo debe contener los atributos exactamente iguales a los descritos anteriormente.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+Luego de realizar el entrenamiento de los modelos descritos anteriormente, debe crear un solo modelo compuesto. Este modelo compuesto será el utilizado para realizar el reconocimiento utilizado en el servicio.
 
-## Contributing
+## Azure FaceAPI
+Se debe contar con un recurso de Azure FaceAPI correctamente configurado. Para ver información sobre la configuración, consulte la siguiente [documentación oficial](https://docs.microsoft.com/es-mx/azure/cognitive-services/face/)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Configuración de variables de entorno
+Para garantizar el correcto funcionamiento del servicio, se deben configurar las siguientes variables de entorno.
+### Credenciales de Azure
+> - SUBSCRIPTION_KEY : Esta debe contener la llave generada por el recurso de Azure Form Recognizer donde se encuentra alojado el modelo compuesto entrenado previamente.
+> - FACEAPI_SUBSCRIPTION_KEY : Esta debe contener la llave generada por un recurso de Azure FaceApi donde se encuentra alojado servicio de reconocimiento de Azure ([FaceAPI](https://docs.microsoft.com/en-us/azure/cognitive-services/face/face-api-how-to-topics/howtodetectfacesinimage)).
+> - URL_BASE_FACEAPI : Esta debe contener el URL del servicio de Azure FaceAPI proporcionado por ellos. Esta se puede encontrar en la información del recurso desde el portal de Azure.
+### Credenciales del administrador
+>- ADMIN_USER : Este nombre de usuario será asignado como nombre del administrador y del comercio generado para su uso.
+>- ADMIN_PASS : Este debe contener la contraseña utilizada por el administrador necesario para realizar el inicio de sesión dentro del servicio.
+>- ADMIN_EMAIL : Este debe contener el correo electrónico del administrador necesario para realizar el inicio de sesión dentro del servicio.
 
-## Code of Conduct
+## Servicio de envió de correos electrónicos.
+Es importante configurar un proveedor de correos electrónicos para realizar el envió de credenciales a cada uno de los comercios que sean registrados. Esto incluye la configuración de las variables de entorno relacionadas al envió de emails en Laravel. 
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Instalación
+Primero hay que instalar todas las librerías necesarias para el correcto funcionamiento del sistema mediante
 
-## Security Vulnerabilities
+    composer install
+Para correr las migraciones necesarias en el servicio es necesario ejecutar el siguiente comando.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    php artisan migrate
+Para generar las credenciales del administrador, roles y permisos del servicios, es necesario ejecutar el siguiente comando.
 
-## License
+    php artisan db:seed
+## Cola de procesos
+Es muy importante recalcar que se debe mantener una cola ejecutándose en el servidor para realizar tareas como el entrenamiento de los rostros de personas, envió de correos electrónicos, etc. Para iniciar la cola, es necesario ejecutar el siguiente comando.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    php artisan queue:work
+## Corriendo el servicio
+Una vez que se ha configurado todo, el servicio se puede usar mediante la ejecución del comando
+
+    php artisan serve
+
+### Documentación sobre la API
+Una vez el servicio se encuentra ejecutándose correctamente, se puede acceder a la documentación de esta mediante /docs.
+Esta documentación se encuentra realizada utilizando Swagger y OpenAPI 3.0.
+
+## Licencia
+
+Laravel es un framework de código abierto sobre la licencia.  [MIT license](https://opensource.org/licenses/MIT).
+
+## Contacto
+
+Correo electrónico: juanguillenmtz16@gmail.com
