@@ -156,6 +156,12 @@ Una vez que se ha configurado todo, el servicio se puede usar mediante la ejecuc
 
     php artisan serve
 
+# Funcionamiento del servicio
+
+Para llevar a cabo el control de las personas registradas dentro de cada comercio, es necesario que como administrador, que se registre a cada uno de los comercios que requieran utilizar del servicio.
+Para esto, se expone un endpoint de ([creación de comercios](http://127.0.0.1:8000/api/commerces)), este endpoint recibe el nombre, correo y contraseña que el comercio utilizara para generar los tokens necesarios para autenticarse en el sistema.
+Al terminar de configurar el repositorio y de correr las migraciones y seeders, se generara un usuario con las credenciales configuradas en las variables de entorno junto con un comercio del mismo nombre, puede empezar a realizar pruebas con los endpoints descritos en la documentación.
+
 ### Documentación sobre la API
 
 Una vez el servicio se encuentra ejecutándose correctamente, se puede acceder a la documentación de esta mediante http://127.0.0.1:8000/docs.
