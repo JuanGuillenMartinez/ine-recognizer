@@ -126,35 +126,35 @@ Es importante configurar un proveedor de correos electrónicos para realizar el 
 
 Clonando el repositorio
 
-git clone https://github.com/JuanGuillenMartinez/ine-recognizer.git
+    git clone https://github.com/JuanGuillenMartinez/ine-recognizer.git
 
 Primero hay que instalar todas las librerías necesarias para el correcto funcionamiento del sistema mediante
 
-composer install
+    composer install
 
 Una vez se han instalado las librerías, se deben generar las llaves del proyecto de Laravel mediante el siguiente comando.
 
-php artisan key:generate
+    php artisan key:generate
 
 Para correr las migraciones necesarias en el servicio es necesario ejecutar el siguiente comando.
 
-php artisan migrate
+    php artisan migrate
 
 Para generar las credenciales del administrador, roles y permisos del servicios, es necesario ejecutar el siguiente comando.
 
-php artisan db:seed
+    php artisan db:seed
 
 ## Cola de procesos
 
 Es muy importante recalcar que se debe mantener una cola ejecutándose en el servidor para realizar tareas como el entrenamiento de los rostros de personas, envió de correos electrónicos, etc. Para iniciar la cola, es necesario ejecutar el siguiente comando.
 
-php artisan queue:work
+    php artisan queue:work
 
 ## Corriendo el servicio
 
 Una vez que se ha configurado todo, el servicio se puede usar mediante la ejecución del comando
 
-php artisan serve
+    php artisan serve
 
 ### Documentación sobre la API
 
