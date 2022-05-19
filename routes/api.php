@@ -34,14 +34,14 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
     Route::post('/commerces', [CommerceController::class, 'create']);
 });
 
+Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
+Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
+Route::post('/commerces/{commerceId}/search/persons', [PersonController::class, 'personInformation']);
+Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson']);
 Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () { 
     /** 
         COMMERCE ENDPOINTS 
      */
-    Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
-    Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
-    Route::post('/commerces/{commerceId}/search/persons', [PersonController::class, 'personInformation']);
-    Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson']);
     
     /** 
      FACE API ENDPOINTS 

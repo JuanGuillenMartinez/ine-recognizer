@@ -32,6 +32,10 @@ class Person extends Model
         return $this->hasOne(FaceapiPerson::class);
     }
 
+    public function ineInformation() {
+        return $this->hasOne(IneDetail::class);
+    }
+
     public function azurePersonId()
     {
         return $this->faceapiPerson->faceapi_person_id;

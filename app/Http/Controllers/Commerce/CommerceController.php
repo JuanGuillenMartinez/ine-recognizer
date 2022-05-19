@@ -11,7 +11,9 @@ use App\Helpers\JsonResponse;
 use App\Helpers\FaceApiRequest;
 use App\Helpers\AnalyzeDocument;
 use App\Http\Controllers\Controller;
+use App\Jobs\AnalyzeBackIneJob;
 use App\Models\FaceapiPerson;
+use App\Models\IneInformation;
 use Illuminate\Support\Facades\Hash;
 
 class CommerceController extends Controller
@@ -57,6 +59,7 @@ class CommerceController extends Controller
         $commerce = Commerce::find($commerceId);
         $personGroup = $commerce->faceapiPersonGroup;
         $urlIne = $request->photo_url;
+        $backIne = $request->back_photo_url;
         if (!isset($commerce)) {
             return JsonResponse::sendError('El ID proporcionado es incorrecto');
         }
@@ -65,6 +68,7 @@ class CommerceController extends Controller
         $person = Person::where('clave_elector', $dataExtracted['clave_elector'])->first();
         if (!isset($person)) {
             $person = $this->registerPerson($dataExtracted, $urlIne);
+            AnalyzeBackIneJob::dispatch($person, $backIne);
         }
         $faceapiPerson = FaceapiPerson::where(['person_id' => $person->id, 'faceapi_person_group_id' => $personGroup->id])->first();
         if (!isset($faceapiPerson)) {
