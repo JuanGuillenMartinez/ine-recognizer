@@ -27,10 +27,13 @@ class FaceApiRequest
             'url' => $urlImage,
         ]);
         $jsonResponse = json_decode($response->body());
-        if (!isset($jsonResponse->error)) {
-            return $jsonResponse[0];
+        if (isset($jsonResponse->error)) {
+            return JsonResponse::sendError($jsonResponse);
         }
-        return $jsonResponse;
+        if(!isset($jsonResponse[0])) {
+            return JsonResponse::sendError('Ha ocurrido un error al procesar la imagen. Asegúrese de enviar la imagen correctamente de acuerdo a la documentación proporcionada.', 500, $jsonResponse);
+        }
+        return $jsonResponse[0];
     }
 
     public function verifyFaceToFace($image1, $image2)
