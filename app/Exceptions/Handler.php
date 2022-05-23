@@ -51,5 +51,8 @@ class Handler extends ExceptionHandler
         $this->renderable(function(UnauthorizedException $e) {
             return JsonResponse::sendError('No cuenta con los permisos para realizar la accion', 500);
         });
+        $this->renderable(function(WrongImageUrl $e) {
+            return JsonResponse::sendError($e->getMessage(), $e->getCode(), ['description' => 'Aunque el servicio puede procesar imágenes en vertical, lo recomendable es que enviar imágenes en horizontal y con buena calidad']);
+        });
     }
 }

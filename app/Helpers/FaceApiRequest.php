@@ -2,7 +2,9 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\WrongImageUrl;
 use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class FaceApiRequest
 {
@@ -28,10 +30,10 @@ class FaceApiRequest
         ]);
         $jsonResponse = json_decode($response->body());
         if (isset($jsonResponse->error)) {
-            return JsonResponse::sendError($jsonResponse);
+            throw new WrongImageUrl('Ha ocurrido un error al procesar la imagen. Revise la documentación proporcionada por el servicio de Azure FaceApi.', 500);
         }
         if(!isset($jsonResponse[0])) {
-            return JsonResponse::sendError('Ha ocurrido un error al procesar la imagen. Asegúrese de enviar la imagen correctamente de acuerdo a la documentación proporcionada.', 500, $jsonResponse);
+            throw new WrongImageUrl('Ha ocurrido un error al procesar la imagen, Favor de asegurarse que la imagen se encuentra orientada horizontalmente y tenga buena calidad.', 400);
         }
         return $jsonResponse[0];
     }
