@@ -22,6 +22,15 @@ use App\Http\Controllers\FaceApi\PersonController as PersonGroupPersonController
 |
 */
 
+Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
+Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
+Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
+
+/** 
+ FORM RECOGNIZER ENDPOINTS 
+ */
+Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
+Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
 Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
     /** 
         REGISTER USER ENDPOINT 
@@ -45,15 +54,6 @@ Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () 
     /** 
      FACE API ENDPOINTS 
      */
-    Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
-    Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
-    Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
-
-    /** 
-     FORM RECOGNIZER ENDPOINTS 
-     */
-    Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
-    Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
 });
 
 /** 

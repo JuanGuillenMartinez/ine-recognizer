@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use App\Exceptions\WrongImageUrl;
+
 class AzureRecognitionRequest
 {
     static $response;
@@ -46,6 +48,9 @@ class AzureRecognitionRequest
         curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
         $response = curl_exec($curl);
         curl_close($curl);
+        if (!isset($headers['apim-request-id'])) {
+            throw new WrongImageUrl('Ha ocurrido un error al procesar el documento. Asegúrese que la calidad del documento sea buena.', 400);
+        }
         $keyResponse = strval($headers['apim-request-id'][0]);
         return $keyResponse;
     }
