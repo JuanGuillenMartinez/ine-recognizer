@@ -6,6 +6,7 @@ use Closure;
 use App\Models\RequestLimit;
 use Illuminate\Http\Request;
 use App\Exceptions\RequestLimitReached;
+use App\Jobs\PersistRequestOnLogJob;
 use App\Models\Request as ModelsRequest;
 
 class VerifyLimitRequestForUser
@@ -20,11 +21,26 @@ class VerifyLimitRequestForUser
     public function handle(Request $request, Closure $next, $name)
     {
         $userRequest = ModelsRequest::where('name', $name)->first();
+        if(!isset($userRequest)) {
+            throw new RequestLimitReached('Ha alcanzado el limite de peticiones disponible. Comuníquese con su administrador.', 400);
+        }
         $user = $request->user();
         $result = $user->registerRequestMade($userRequest);
         if(!$result) {
             throw new RequestLimitReached('Ha alcanzado el limite de peticiones disponible. Comuníquese con su administrador.', 400);
         }
+        $this->persistRequest($request, $user);
         return $next($request);
+    }
+
+    private function persistRequest($request, $user) {
+        $data = [
+            'user_id' => $user->id,
+            'token_used' => $request->bearerToken(),
+            'ip_address' => $request->ip(),
+            'url_requested' => $request->url(),
+            'headers' => $request->headers,
+        ];
+        PersistRequestOnLogJob::dispatch($data)->onQueue('default');
     }
 }
