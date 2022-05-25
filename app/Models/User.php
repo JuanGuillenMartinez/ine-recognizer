@@ -54,4 +54,17 @@ class User extends Authenticatable
     {
         return $this->hasOne(Commerce::class);
     }
+
+    public function requestLimit()
+    {
+        return $this->hasOne(RequestLimit::class);
+    }
+
+    public function registerRequestLimit($limit = 10) {
+        $requestLimit = RequestLimit::create([
+            'user_id' => $this->id,
+            'limit' => $limit,
+        ]);
+        return isset($requestLimit);
+    }
 }

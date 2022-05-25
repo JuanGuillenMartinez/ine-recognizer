@@ -5,6 +5,7 @@ namespace App\Observers\User;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\User\SendCredentialsMail;
+use Illuminate\Support\Facades\Log;
 
 class UserObserver
 {
@@ -16,7 +17,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        Mail::to($user->email)->send(new SendCredentialsMail($user));
+        $user->registerRequestLimit();
     }
 
     /**
