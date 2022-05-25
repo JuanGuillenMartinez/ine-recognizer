@@ -47,7 +47,7 @@ Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () 
     /** 
      COMMERCE ENDPOINTS 
      */
-    Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson']);
+    Route::post('/commerces/{commerceId}/persons', [CommerceController::class, 'addPerson'])->middleware('limit:register-person');
     Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
     Route::post('/commerces/{commerceId}/search/persons', [PersonController::class, 'personInformation']);
     Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson']);

@@ -70,7 +70,7 @@ class User extends Authenticatable
         if(!isset($requests)) {
             return false;
         }
-        
+
         foreach ($requests as $request) {
             $limitAssigned = $limitIsSetted ? $limit : $request->limit_default;
             $this->assignLimitToRequest($request->id, $limitAssigned);
@@ -85,5 +85,15 @@ class User extends Authenticatable
             'limit' => $limit,
         ]);
         return isset($requestLimit);
+    }
+
+    public function registerRequestMade(UserRequest $request) {
+        $requestLimit = RequestLimit::where(['user_id' => $this->id, 'request_id' => $request->id])->first();
+        $limitForUser = $requestLimit->limit;
+        if($limitForUser > 0) {
+            $requestLimit->limit = $limitForUser - 1;
+            return $requestLimit->save();
+        }
+        return false;
     }
 }

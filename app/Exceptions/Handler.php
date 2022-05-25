@@ -54,5 +54,8 @@ class Handler extends ExceptionHandler
         $this->renderable(function(WrongImageUrl $e) {
             return JsonResponse::sendError($e->getMessage(), $e->getCode(), ['description' => 'Aunque el servicio puede procesar imágenes en vertical, lo recomendable es que enviar imágenes en horizontal y con buena calidad']);
         });
+        $this->renderable(function(RequestLimitReached $e) {
+            return JsonResponse::sendError($e->getMessage(), $e->getCode(), ['description' => 'Ha alcanzado el limite de peticiones permitidas por este usuario. Contacte con el administrador para aumentar este limite.']);
+        });
     }
 }
