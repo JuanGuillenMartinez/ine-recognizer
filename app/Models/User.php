@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\Request as UserRequest;
+use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasEvents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\Log;
 
 class User extends Authenticatable
 {
@@ -57,12 +59,29 @@ class User extends Authenticatable
 
     public function requestLimit()
     {
-        return $this->hasOne(RequestLimit::class);
+        return $this->hasMany(RequestLimit::class);
     }
 
-    public function registerRequestLimit($limit = 10) {
+    public function registerAllLimits($limit = null)
+    {
+        $requests = UserRequest::all();
+        $limitIsSetted = isset($limit);
+
+        if(!isset($requests)) {
+            return false;
+        }
+        
+        foreach ($requests as $request) {
+            $limitAssigned = $limitIsSetted ? $limit : $request->limit_default;
+            $this->assignLimitToRequest($request->id, $limitAssigned);
+        }
+    }
+
+    public function assignLimitToRequest(int $requestId, int $limit)
+    {
         $requestLimit = RequestLimit::create([
             'user_id' => $this->id,
+            'request_id' => $requestId,
             'limit' => $limit,
         ]);
         return isset($requestLimit);

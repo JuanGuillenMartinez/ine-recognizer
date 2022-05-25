@@ -13,11 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('request_limits', function (Blueprint $table) {
+        Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('request_id')->constrained();
-            $table->integer('limit')->default(10);
+            $table->string('url', 1000);
+            $table->string('name');
+            $table->integer('limit_default')->default(10);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('request_limits');
+        Schema::dropIfExists('requests');
     }
 };
