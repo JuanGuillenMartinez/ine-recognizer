@@ -48,11 +48,14 @@
                     @endif
                     @else
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('logout') }}"><i class="fa-solid fa-door-closed"></i>{{ __('Cerrar Sesión') }}</a>
+                        <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link" href="{{ route('logout') }}"><i class="fa-solid fa-door-closed"></i>{{ __('Cerrar Sesión') }}</a>
                     </li>
                     @endguest
                 </ul>
             </div>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
         </nav>
 
         <main class="py-4">
