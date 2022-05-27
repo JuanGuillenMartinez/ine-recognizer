@@ -20,3 +20,7 @@ Route::get('/', function () {
 Route::get('/auth/login', function () {
     return view('/auth/login');
 });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
