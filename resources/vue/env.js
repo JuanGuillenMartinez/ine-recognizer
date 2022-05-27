@@ -1,3 +1,3 @@
-const pathApi = "http://transparencia-backend.test/api";
+const pathApi = "http://127.0.0.1:8000/api";
 
 export { pathApi };

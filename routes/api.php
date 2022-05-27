@@ -10,6 +10,7 @@ use App\Http\Controllers\Person\PersonController;
 use App\Http\Controllers\Commerce\CommerceController;
 use App\Http\Controllers\FaceApi\PersonGroupController;
 use App\Http\Controllers\FaceApi\PersonController as PersonGroupPersonController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,7 @@ Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFa
  */
 Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
 Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
+
 Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
     /** 
         REGISTER USER ENDPOINT 
@@ -41,6 +43,11 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
         REGISTER COMMERCE ENDPOINT 
      */
     Route::post('/commerces', [CommerceController::class, 'create']);
+
+    /**
+        USER ENDPOINTS
+     */
+    Route::apiResource('/users', UserController::class);
 });
 
 Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () {

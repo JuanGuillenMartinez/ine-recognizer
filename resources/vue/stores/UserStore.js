@@ -1,8 +1,10 @@
 import { defineStore } from "pinia";
 import { getAll, get, post } from "../helpers/Request";
-import headers from "../helpers/TableHeaders/Folder"
-const baseUrl = "/folders";
-export const useFolderStore = defineStore("folder", {
+import headers from "../helpers/TableHeaders/User";
+
+const baseUrl = "/users";
+
+export const useUserStore = defineStore("user", {
     state: () => {
         return {
             list: [],
@@ -43,6 +45,6 @@ export const useFolderStore = defineStore("folder", {
             this.listFinded = response.data;
             this.isLoading = false;
             return response;
-        }
+        },
     },
 });
