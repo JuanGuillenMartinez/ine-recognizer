@@ -21,12 +21,8 @@ import { CModalTitle } from "@coreui/vue";
 import { CModalFooter } from "@coreui/vue";
 import { CButton } from "@coreui/vue";
 import { CModalBody } from "@coreui/vue";
-import { defineAsyncComponent } from "@vue/runtime-core";
 export default {
     components: {
-        DocumentInformation: defineAsyncComponent(() =>
-            import("@/components/folder/DocumentInformation.vue")
-        ),
         CModal,
         CModalHeader,
         CModalTitle,
