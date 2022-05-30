@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="container-table">
-            <custom-table />
+            <custom-table :columns="headers" :rows="users" />
         </div>
         <div class="container-user-information"></div>
     </div>
@@ -21,6 +21,10 @@ export default {
     computed: {
         ...mapStores(useUserStore),
         users() {
+            return this.userStore.list;
+        },
+        headers() {
+            return this.userStore.tableHeaders;
         },
     },
     async mounted() {
@@ -29,4 +33,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: none;
+}
+</style>

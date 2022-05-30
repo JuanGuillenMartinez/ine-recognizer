@@ -7,14 +7,14 @@ export default [
         isKey: true,
     },
     {
-        label: "Nombre",
-        field: "nombre",
+        label: "Correo electrónico",
+        field: "email",
         width: "10%",
         sortable: true,
     },
     {
-        label: "Sección",
-        field: "identificador_interno",
+        label: "Nombre",
+        field: "name",
         width: "10%",
         sortable: true,
     },

@@ -1,16 +1,18 @@
 <template>
-    <dashboard />
+    <index-view />
 </template>
 
 <script>
 import { defineAsyncComponent } from "@vue/runtime-core";
 export default {
     components: {
-        Dashboard: defineAsyncComponent(() =>
-            import("./components/Dashboard/Dashboard.vue")
-        ),
+        IndexView: defineAsyncComponent(() => import("./views/IndexView.vue")),
     },
 };
 </script>
 
-<style scoped></style>
+<style>
+div#main {
+    max-width: none;
+}
+</style>
