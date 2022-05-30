@@ -20,6 +20,10 @@ class CommerceController extends Controller
 {
     public function create(Request $request)
     {
+        $user = User::where(['email' => $request->email])->first();
+        if(isset($user)) {
+            return JsonResponse::sendError('Ya se encuentra registrado un comercio con el correo proporcionado');
+        }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -31,6 +35,10 @@ class CommerceController extends Controller
             'user_id' => $user->id,
             'name' => $request->name,
         ];
+        $commerce = Commerce::where('user_id', $user->id)->first();
+        if(isset($commerce)) {
+            return JsonResponse::sendError('Ya se encuentra registrado un comercio con el correo proporcionado');
+        }
         $commerce = new Commerce($attributes);
         if ($commerce->save()) {
             return JsonResponse::sendResponse([
