@@ -63,6 +63,10 @@
         </main>
     </div>
     <script src="https://kit.fontawesome.com/adf3db41ef.js" crossorigin="anonymous"></script>
+    <script src="{{ asset('js/main.js') }}" crossorigin="anonymous"></script>
+    <script>
+        window.APP_URL = `{{ env('APP_URL') }}`;
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Roboto');
 
