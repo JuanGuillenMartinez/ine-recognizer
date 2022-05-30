@@ -14,6 +14,12 @@
                 :rows="userLimits"
             />
         </div>
+        <custom-modal
+            @close-modal="closeLimitInformation"
+            :visible="showLimitInformation"
+            title="Actualizar limite de peticiones"
+            title-close="Cerrar"
+        ><limit-form :object="limitInformationSelected" /></custom-modal>
     </div>
 </template>
 
@@ -27,6 +33,12 @@ export default {
     components: {
         CustomTable: defineAsyncComponent(() =>
             import("../../components/Dashboard/Table.vue")
+        ),
+        CustomModal: defineAsyncComponent(() =>
+            import("../../components/Dashboard/CustomModal.vue")
+        ),
+        LimitForm: defineAsyncComponent(() =>
+            import("../../components/Limit/LimitForm.vue")
         ),
     },
     data() {
@@ -60,7 +72,10 @@ export default {
         showLimitModal(limitClicked) {
             this.limitInformationSelected = limitClicked;
             this.showLimitInformation = true;
-        }
+        },
+        closeLimitInformation() {
+            this.showLimitInformation = false;
+        },
     },
     async mounted() {
         await this.userStore.all();
