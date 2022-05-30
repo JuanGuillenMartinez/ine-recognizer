@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\JsonResponse;
+use App\Http\Resources\User\UserLimitsResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -16,7 +17,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        return JsonResponse::sendResponse($users);
+        return JsonResponse::sendResponse(UserLimitsResource::collection($users));
     }
 
     /**
