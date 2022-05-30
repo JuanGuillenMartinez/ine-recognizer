@@ -17,7 +17,7 @@ class UserObserver
      */
     public function created(User $user)
     {
-        // $user->registerAllLimits(20);
+        $user->registerAllLimits(20);
     }
 
     /**
