@@ -1,5 +1,5 @@
 <template>
-    <CModal :visible="visible" @close="$emit('closeForm')">
+    <CModal :visible="visible" @close="$emit('closeModal')">
         <CModalHeader>
             <CModalTitle>{{ title }}</CModalTitle>
         </CModalHeader>
