@@ -1,3 +1,3 @@
-const pathApi = "http://127.0.0.1:8000/api";
+const pathApi = `${window.APP_URL}/api`;
 
 export { pathApi };
