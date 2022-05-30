@@ -7,7 +7,7 @@
             <slot />
         </CModalBody>
         <CModalFooter>
-            <CButton color="danger" @click="$emit('closeForm')">
+            <CButton color="danger" @click="$emit('closeModal')">
                 {{titleClose}}
             </CButton>
         </CModalFooter>
@@ -35,7 +35,7 @@ export default {
         title: String,
         titleClose: String,
     },
-    emits: ["closeForm"],
+    emits: ["closeModal"],
 };
 </script>
 
