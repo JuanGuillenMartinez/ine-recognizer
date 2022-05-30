@@ -23,6 +23,6 @@ class RequestLimit extends Model
 
     public function requestLimited()
     {
-        return $this->belongsTo(UserRequest::class);
+        return $this->belongsTo(UserRequest::class, 'request_id');
     }
 }
