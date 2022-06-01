@@ -11,6 +11,7 @@ export const useLogStore = defineStore("log", {
             isLoading: true,
             finded: {},
             selected: {},
+            searchParam: "",
         };
     },
     actions: {
@@ -45,6 +46,17 @@ export const useLogStore = defineStore("log", {
                 return log;
             });
             return this.list;
+        },
+        filter: (state) => {
+            return (attribute, searchParam) => {
+                if (searchParam === "") {
+                    return state.list;
+                } else {
+                    return state.list.filter((x) =>
+                        x[attribute].toString().includes(searchParam)
+                    );
+                }
+            };
         },
     },
 });
