@@ -38,4 +38,13 @@ export const useLogStore = defineStore("log", {
             return response;
         },
     },
+    getters: {
+        listFormatted() {
+            this.list.map((log) => {
+                log.created_at = new Date(log.created_at).toLocaleString();
+                return log;
+            });
+            return this.list;
+        },
+    },
 });
