@@ -119,8 +119,14 @@ export default {
                 this.limitInformationSelected.id,
                 limitInformation.limit
             );
-            this.closeLimitInformation();
             await this.userStore.all();
+            this.userSelected = this.userStore.list.reduce((user) => {
+                if (user.id === this.userSelected.id) {
+                    return user;
+                }
+            });
+            this.userLimits = this.userSelected.limit;
+            this.closeLimitInformation();
         },
     },
     watch: {
@@ -131,7 +137,6 @@ export default {
             this.users = this.userStore.filter("email", newValue);
         },
         requestInput(newValue) {
-            console.log(this.userSelected.limit);
             this.userLimits = this.userSelected.limit.filter((limitRequest) => {
                 return limitRequest.request.toString().includes(newValue);
             });

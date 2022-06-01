@@ -48,7 +48,6 @@ export const useUserStore = defineStore("user", {
         },
         async updateLimits(userId, limitId, limit) {
             this.isLoading = true;
-            console.log(limitId);
             const response = await put(`${baseUrl}/${userId}/limits`, {
                 user_limit_id: limitId,
                 limit,
