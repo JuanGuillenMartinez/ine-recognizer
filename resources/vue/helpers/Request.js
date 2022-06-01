@@ -33,6 +33,8 @@ export const update = async (url, data) => {
 
 export const put = async (url, data) => {
     if (data) {
-        return await axios.getInstance().put(url, data);
+        const response = await axios.getInstance().put(url, data);
+        const { data: responseData } = response;
+        return responseData;
     }
 };
