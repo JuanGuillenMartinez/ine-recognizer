@@ -34,6 +34,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0);"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
                     </li>
+                    @guest
+                    @if (Route::has('login'))
+                    <li class="nav-item">
+                        <a style="position: absolute; right:12px;" class="nav-link" href="{{ route('login') }}">{{ __('Iniciar sesión') }}</a>
+                    </li>
+                    @endif
+                    @else
                     <li class="nav-item active">
                         <a class="nav-link" href="javascript:void(0);"><i class="far fa-address-book"></i></a>
                     </li>
@@ -41,16 +48,9 @@
                         <a class="nav-link" href="javascript:void(0);"><i class="fa-solid fa-people-group"></i>Usuarios</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0);"><i class="fa-solid fa-file-lines"></i>Logs</a>
+                        <a class="nav-link" onclick="goToLogs"><i class="fa-solid fa-file-lines"></i>Logs</a>
                     </li>
-                    @guest
-                    @if (Route::has('login'))
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                    </li>
-                    @endif
-                    @else
-                    <li class="nav-item">
+                    <li style="position: absolute; right:12px;" class="nav-item">
                         <a onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link" href="{{ route('logout') }}"><i class="fa-solid fa-door-closed"></i>{{ __('Cerrar Sesión') }}</a>
                     </li>
                     @endguest
