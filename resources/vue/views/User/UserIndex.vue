@@ -19,7 +19,10 @@
             :visible="showLimitInformation"
             title="Actualizar limite de peticiones"
             title-close="Cerrar"
-        ><limit-form :object="limitInformationSelected" /></custom-modal>
+            ><limit-form
+                @save-clicked="updateLimit"
+                :object="limitInformationSelected"
+        /></custom-modal>
     </div>
 </template>
 
@@ -75,6 +78,15 @@ export default {
         },
         closeLimitInformation() {
             this.showLimitInformation = false;
+        },
+        async updateLimit(limitInformation) {
+            const response = await this.userStore.updateLimits(
+                this.userSelected.id,
+                this.limitInformationSelected.id,
+                limitInformation.limit
+            );
+            this.closeLimitInformation();
+            await this.userStore.all();
         },
     },
     async mounted() {

@@ -48,6 +48,7 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
         USER ENDPOINTS
      */
     Route::apiResource('/users', UserController::class);
+    Route::put('/users/{userId}/limits', [UserController::class, 'updateLimits']);
 });
 
 Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () {

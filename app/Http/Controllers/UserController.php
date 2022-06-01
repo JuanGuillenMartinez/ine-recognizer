@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\JsonResponse;
 use App\Http\Resources\User\UserLimitsResource;
+use App\Models\RequestLimit;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -63,5 +64,18 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function updateLimits($userId, Request $request)
+    {
+        $requestLimit = RequestLimit::find($request->user_limit_id);
+        if (!isset($requestLimit)) {
+            return JsonResponse::sendError('El usuario no tiene asignado el permiso');
+        }
+        $requestLimit->limit = $request->limit;
+        if ($requestLimit->save()) {
+            return JsonResponse::sendResponse($requestLimit, 'El limite de peticiones ha sido actualizado correctamente');
+        }
+        return JsonResponse::sendError('El limite de peticiones ha sido actualizado correctamente');
     }
 }

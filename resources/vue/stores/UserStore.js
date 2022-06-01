@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getAll, get, post } from "../helpers/Request";
+import { getAll, get, post, put } from "../helpers/Request";
 import headers from "../helpers/TableHeaders/User";
 
 const baseUrl = "/users";
@@ -43,6 +43,16 @@ export const useUserStore = defineStore("user", {
             this.isLoading = true;
             const response = await get(`/folder-groups/${id}/folders`);
             this.listFinded = response.data;
+            this.isLoading = false;
+            return response;
+        },
+        async updateLimits(userId, limitId, limit) {
+            this.isLoading = true;
+            console.log(limitId);
+            const response = await put(`${baseUrl}/${userId}/limits`, {
+                user_limit_id: limitId,
+                limit,
+            });
             this.isLoading = false;
             return response;
         },
