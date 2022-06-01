@@ -14,7 +14,7 @@
             <input
                 :readonly="false"
                 v-model="properties.limit"
-                type="text"
+                type="number"
                 class="form-control"
             />
         </div>
