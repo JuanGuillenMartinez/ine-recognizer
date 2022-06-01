@@ -41,4 +41,7 @@ button {
     height: 65px;
     font-size: 24px;
 }
+i {
+    margin-right: 0px !important;
+}
 </style>
