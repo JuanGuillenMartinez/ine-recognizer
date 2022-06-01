@@ -14,7 +14,6 @@ class LogRequest extends Model
         'token_used',
         'ip_address',
         'url_requested',
-        'headers',
     ];
 
     public function user()

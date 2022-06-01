@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('token_used');
             $table->string('ip_address');
             $table->string('url_requested');
-            $table->string('headers');
             $table->timestamps();
         });
     }

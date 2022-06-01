@@ -39,7 +39,6 @@ class VerifyLimitRequestForUser
             'token_used' => $request->bearerToken(),
             'ip_address' => $request->ip(),
             'url_requested' => $request->url(),
-            'headers' => $request->headers,
         ];
         PersistRequestOnLogJob::dispatch($data)->onQueue('default');
     }
