@@ -57,4 +57,17 @@ export const useUserStore = defineStore("user", {
             return response;
         },
     },
+    getters: {
+        filter: (state) => {
+            return (attribute, searchParam) => {
+                if (searchParam === "") {
+                    return state.list;
+                } else {
+                    return state.list.filter((x) =>
+                        x[attribute].toString().includes(searchParam)
+                    );
+                }
+            };
+        },
+    }
 });
