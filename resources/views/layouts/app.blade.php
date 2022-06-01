@@ -40,6 +40,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0);"><i class="fa-solid fa-people-group"></i>Usuarios</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:void(0);"><i class="fa-solid fa-file-lines"></i>Logs</a>
+                    </li>
                     @guest
                     @if (Route::has('login'))
                     <li class="nav-item">
