@@ -10,6 +10,7 @@ use App\Http\Controllers\Person\PersonController;
 use App\Http\Controllers\Commerce\CommerceController;
 use App\Http\Controllers\FaceApi\PersonGroupController;
 use App\Http\Controllers\FaceApi\PersonController as PersonGroupPersonController;
+use App\Http\Controllers\LogRequestController;
 use App\Http\Controllers\UserController;
 
 /*
@@ -49,6 +50,11 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
      */
     Route::apiResource('/users', UserController::class);
     Route::put('/users/{userId}/limits', [UserController::class, 'updateLimits']);
+
+    /**
+        LOG ENDPOINTS
+     */
+    Route::get('/logs', [LogRequestController::class, 'index']);
 });
 
 Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () {
