@@ -11,12 +11,14 @@
         <float-button
             @button-clicked="showUserTab"
             color-class="btn-primary"
+            title="Usuarios"
             :float="false"
             icon="fa-solid fa-people-group"
         />
         <float-button
             @button-clicked="showLogTab"
             color-class="btn-primary"
+            title="Logs"
             :float="false"
             icon="fa-solid fa-file-lines"
         />

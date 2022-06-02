@@ -1,5 +1,5 @@
 <template>
-    <button @click="$emit('buttonClicked')" type="button" :class="getClass">
+    <button :title="title" @click="$emit('buttonClicked')" type="button" :class="getClass">
         <i :class="icon"></i>
     </button>
 </template>
@@ -15,6 +15,10 @@ export default {
         colorClass: {
             type: String,
             default: "btn-success"
+        },
+        title: {
+            type: String,
+            default: "Button"
         }
     },
     computed: {
