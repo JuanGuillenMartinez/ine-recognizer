@@ -22,7 +22,7 @@ class JsonResponse
         return response()->json($response, $code);
     }
 
-    public static function sendPaginateResponse($result, $message = 'Request successfully completed', $code = 200)
+    public static function sendPaginateResponse($result, $totalRows, $message = 'Request successfully completed', $code = 200)
     {
         if (isset($result->resource)) {
             $paginator = $result->resource->toArray();
@@ -30,6 +30,7 @@ class JsonResponse
         if (isset($paginator['data'])) {
             $data = $paginator['data'];
             unset($paginator['data']);
+            $paginator['total'] = $totalRows;
         }
         $response = [
             'success' => true,
