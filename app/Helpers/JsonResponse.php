@@ -1,6 +1,11 @@
 <?php
+
 namespace App\Helpers;
-class JsonResponse {
+
+use Illuminate\Pagination\CursorPaginator;
+
+class JsonResponse
+{
     /**
      * Make a successfully response.
      *
@@ -14,6 +19,24 @@ class JsonResponse {
             'data'    => $result,
         ];
 
+        return response()->json($response, $code);
+    }
+
+    public static function sendPaginateResponse($result, $message = 'Request successfully completed', $code = 200)
+    {
+        if (isset($result->resource)) {
+            $paginator = $result->resource->toArray();
+        }
+        if (isset($paginator['data'])) {
+            $data = $paginator['data'];
+            unset($paginator['data']);
+        }
+        $response = [
+            'success' => true,
+            'message' => $message,
+            'data' => isset($data) ? $data : [],
+            'links' => isset($paginator) ? $paginator : null,
+        ];
         return response()->json($response, $code);
     }
 
