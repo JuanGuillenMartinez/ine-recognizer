@@ -1,12 +1,13 @@
 <template>
     <table-lite
-        :is-static-mode="true"
         :columns="columns"
         :rows="rows"
         :total="totalCount"
         :sortable="sortable"
         :page-options="quantity"
+        :is-re-search="true"
         @row-clicked="show"
+        @do-search="changePage"
     ></table-lite>
 </template>
 
@@ -22,6 +23,9 @@ export default {
             type: Number,
             default: 10,
         },
+        total: {
+            default: null,
+        },
     },
     computed: {
         sortable() {
@@ -31,7 +35,10 @@ export default {
             };
         },
         totalCount() {
-            return this.rows.length;
+            if (this.total === null) {
+                return this.rows.length;
+            }
+            return this.total;
         },
         quantity() {
             return [
@@ -46,7 +53,13 @@ export default {
         show(selected) {
             this.$emit("row-selected", selected);
         },
+        changePage(offset) {
+            console.log('cambio');
+            console.log(offset);
+            // this.$emit('doSearch', offset)
+        }
     },
+    emits: ["row-selected", "do-search"],
 };
 </script>
 

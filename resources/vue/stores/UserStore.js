@@ -13,6 +13,7 @@ export const useUserStore = defineStore("user", {
             finded: {},
             tableHeaders: headers,
             selected: {},
+            paginate: {},
         };
     },
     actions: {
@@ -21,6 +22,7 @@ export const useUserStore = defineStore("user", {
             const response = await getAll(baseUrl);
             const { data } = response;
             this.list = data;
+            this.paginate = response.links;
             this.isLoading = false;
             return response;
         },
@@ -55,6 +57,9 @@ export const useUserStore = defineStore("user", {
             this.isLoading = false;
             return response;
         },
+        async changePage(next) {
+            
+        }
     },
     getters: {
         filter: (state) => {

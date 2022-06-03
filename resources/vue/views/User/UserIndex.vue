@@ -23,9 +23,11 @@
                 </div>
                 <custom-table
                     class="table-users"
-                    @row-selected="showLimitRequestTable"
                     :columns="headers"
                     :rows="users"
+                    :total="totalRows"
+                    @row-selected="showLimitRequestTable"
+                    @do-search="changePage"
                 />
             </div>
             <div v-if="showLimitTable" class="limit-request-table">
@@ -99,6 +101,9 @@ export default {
         userLimitHeaders() {
             return userLimitColumns;
         },
+        totalRows() {
+            return this.userStore.paginate.total;
+        },
     },
     methods: {
         showLimitRequestTable(rowClicked) {
@@ -127,6 +132,9 @@ export default {
             });
             this.userLimits = this.userSelected.limit;
             this.closeLimitInformation();
+        },
+        async changePage(offset) {
+            console.log(offset);
         },
     },
     watch: {
