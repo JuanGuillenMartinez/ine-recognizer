@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\RequestLimit;
 use Illuminate\Http\Request;
 use App\Helpers\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use App\Http\Resources\User\UserLimitsResource;
 
 class UserController extends Controller
@@ -18,9 +17,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::cursorPaginate(10);
-        $result = DB::table('users')->selectRaw('count(*) as total')->first();
-        return JsonResponse::sendPaginateResponse(UserLimitsResource::collection($users), $result->total);
+        $users = User::paginate(10);
+        return JsonResponse::sendPaginateResponse(UserLimitsResource::collection($users));
     }
 
     /**
