@@ -21,7 +21,7 @@ class UserController extends Controller
         // $users = User::paginate(10);
         // return JsonResponse::sendPaginateResponse(UserLimitsResource::collection($users));
         $users = User::all();
-        return JsonResponse::sendResponse($users);
+        return JsonResponse::sendResponse(UserLimitsResource::collection($users));
     }
 
     /**
