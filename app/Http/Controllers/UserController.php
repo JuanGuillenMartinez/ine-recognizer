@@ -7,6 +7,7 @@ use App\Models\RequestLimit;
 use Illuminate\Http\Request;
 use App\Helpers\JsonResponse;
 use App\Http\Resources\User\UserLimitsResource;
+use App\Http\Resources\User\UserCredentialResource;
 
 class UserController extends Controller
 {
@@ -79,5 +80,20 @@ class UserController extends Controller
             return JsonResponse::sendResponse($requestLimit, 'El limite de peticiones ha sido actualizado correctamente');
         }
         return JsonResponse::sendError('El limite de peticiones ha sido actualizado correctamente');
+    }
+
+    public function credentials($userId)
+    {
+        $user = User::find($userId);
+        return JsonResponse::sendResponse(new UserCredentialResource($user));
+    }
+
+    public function generateToken($userId)
+    {
+        $user = User::find($userId);
+        $token = $user->createToken('auth-token');
+        return JsonResponse::sendResponse([
+            'token' => $token->plainTextToken
+        ]);
     }
 }

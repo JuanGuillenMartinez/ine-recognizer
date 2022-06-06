@@ -27,6 +27,7 @@
                     :rows="users"
                     @row-selected="showLimitRequestTable"
                     @do-search="changePage"
+                    @is-finished="tableLoadingFinish"
                 />
             </div>
             <div v-if="showLimitTable" class="limit-request-table">
@@ -54,6 +55,18 @@
                     @save-clicked="updateLimit"
                     :object="limitInformationSelected"
             /></custom-modal>
+            <custom-modal
+                @close-modal="showCredentialsInformation = false"
+                :visible="showCredentialsInformation"
+                title="Credenciales del usuario"
+                title-close="Cerrar"
+            >
+                <credentials-form
+                    @generate-token="generateToken"
+                    :readonly="true"
+                    :object="userStore.userCredentialsSelected"
+                />
+            </custom-modal>
         </div>
     </div>
 </template>
@@ -78,6 +91,9 @@ export default {
         TitleTab: defineAsyncComponent(() =>
             import("../../components/Dashboard/TitleTab.vue")
         ),
+        CredentialsForm: defineAsyncComponent(() =>
+            import("../../components/User/CredentialsForm.vue")
+        ),
     },
     data() {
         return {
@@ -90,6 +106,7 @@ export default {
             requestInput: "",
             users: [],
             userLimits: [],
+            showCredentialsInformation: false,
         };
     },
     computed: {
@@ -134,6 +151,24 @@ export default {
         },
         async changePage(offset) {
             console.log(offset);
+        },
+        tableLoadingFinish(elements) {
+            for (let item of elements) {
+                this.addEventButtons(item);
+            }
+        },
+        addEventButtons(element) {
+            if (element.classList.contains("btn-credentials")) {
+                element.addEventListener("click", () => {
+                    const userId = element.dataset.id;
+                    this.showCredentialsInformation = true;
+                    this.userStore.findCredentials(userId);
+                });
+            }
+        },
+        async generateToken(properties) {
+            const userId = properties.id;
+            await this.userStore.generateToken(userId);
         },
     },
     watch: {

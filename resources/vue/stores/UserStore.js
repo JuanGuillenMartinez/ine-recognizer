@@ -14,6 +14,7 @@ export const useUserStore = defineStore("user", {
             tableHeaders: headers,
             selected: {},
             paginate: {},
+            userCredentialsSelected: {},
         };
     },
     actions: {
@@ -57,9 +58,15 @@ export const useUserStore = defineStore("user", {
             this.isLoading = false;
             return response;
         },
-        async changePage(next) {
-            
-        }
+        async changePage(next) {},
+        async findCredentials(userId) {
+            const response = await get(`${baseUrl}/${userId}/credentials`);
+            this.userCredentialsSelected = response.data;
+        },
+        async generateToken(userId) {
+            const response = await post(`${baseUrl}/${userId}/token`);
+            this.userCredentialsSelected.token = response.data.token;
+        },
     },
     getters: {
         filter: (state) => {
@@ -73,5 +80,5 @@ export const useUserStore = defineStore("user", {
                 }
             };
         },
-    }
+    },
 });

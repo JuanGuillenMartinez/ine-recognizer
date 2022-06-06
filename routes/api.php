@@ -50,6 +50,8 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
      */
     Route::apiResource('/users', UserController::class);
     Route::put('/users/{userId}/limits', [UserController::class, 'updateLimits']);
+    Route::get('/users/{userId}/credentials', [UserController::class, 'credentials']);
+    Route::post('/users/{userId}/token', [UserController::class, 'generateToken']);
 
     /**
         LOG ENDPOINTS

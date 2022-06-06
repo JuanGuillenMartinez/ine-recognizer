@@ -7,6 +7,7 @@
         :sortable="sortable"
         :page-options="quantity"
         @row-clicked="show"
+        @is-finished="emitLoadingFinish"
     ></table-lite>
 </template>
 
@@ -53,12 +54,15 @@ export default {
             this.$emit("row-selected", selected);
         },
         changePage(offset) {
-            console.log('cambio');
+            console.log("cambio");
             console.log(offset);
             // this.$emit('doSearch', offset)
-        }
+        },
+        emitLoadingFinish(elements) {
+            this.$emit("is-finished", elements);
+        },
     },
-    emits: ["row-selected", "do-search"],
+    emits: ["row-selected", "do-search", "is-finished"],
 };
 </script>
 
