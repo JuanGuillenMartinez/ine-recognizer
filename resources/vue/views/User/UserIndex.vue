@@ -29,6 +29,17 @@
                     @do-search="changePage"
                     @is-finished="tableLoadingFinish"
                 />
+                <button
+                    style="float: right"
+                    @click="openUserForm"
+                    type="button"
+                    class="btn btn-success"
+                >
+                    <i
+                        style="margin-right: 0px; font-size: 16px"
+                        class="fa-solid fa-add"
+                    ></i>
+                </button>
             </div>
             <div v-if="showLimitTable" class="limit-request-table">
                 <div class="search-input">
@@ -67,6 +78,14 @@
                     :object="userStore.userCredentialsSelected"
                 />
             </custom-modal>
+            <custom-modal
+                @close-modal="showUserForm = false"
+                :visible="showUserForm"
+                title="Registrar usuario"
+                title-close="Cerrar"
+            >
+                <user-form @save-clicked="saveUser" />
+            </custom-modal>
         </div>
     </div>
 </template>
@@ -76,6 +95,7 @@ import { defineAsyncComponent } from "@vue/runtime-core";
 import { mapStores } from "pinia";
 import { useUserStore } from "../../stores/UserStore";
 import userLimitColumns from "../../helpers/TableHeaders/UserLimit";
+import UserForm from "../../components/User/UserForm.vue";
 
 export default {
     components: {
@@ -94,6 +114,7 @@ export default {
         CredentialsForm: defineAsyncComponent(() =>
             import("../../components/User/CredentialsForm.vue")
         ),
+        UserForm,
     },
     data() {
         return {
@@ -107,6 +128,7 @@ export default {
             users: [],
             userLimits: [],
             showCredentialsInformation: false,
+            showUserForm: false,
         };
     },
     computed: {
@@ -169,6 +191,12 @@ export default {
         async generateToken(properties) {
             const userId = properties.id;
             await this.userStore.generateToken(userId);
+        },
+        openUserForm() {
+            this.showUserForm = true;
+        },
+        async saveUser(properties) {
+            console.log(properties);
         },
     },
     watch: {

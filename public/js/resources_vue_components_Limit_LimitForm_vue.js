@@ -29,16 +29,6 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
-/***/ "./resources/vue/helpers/Object.js":
-/*!*****************************************!*\
-  !*** ./resources/vue/helpers/Object.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"clone\": () => (/* binding */ clone),\n/* harmony export */   \"isEmpty\": () => (/* binding */ isEmpty)\n/* harmony export */ });\n/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ \"./node_modules/vue/dist/vue.esm-bundler.js\");\n\nvar clone = function clone(object) {\n  if (object) {\n    var copy = JSON.parse(JSON.stringify(object));\n    return (0,vue__WEBPACK_IMPORTED_MODULE_0__.reactive)(copy);\n  }\n\n  return {};\n};\nvar isEmpty = function isEmpty(object) {\n  var parsed = JSON.stringify(object);\n\n  if (parsed.localeCompare(\"{}\") === 0) {\n    return true;\n  }\n\n  return false;\n};//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9yZXNvdXJjZXMvdnVlL2hlbHBlcnMvT2JqZWN0LmpzLmpzIiwibWFwcGluZ3MiOiI7Ozs7OztBQUFBO0FBRU8sSUFBTUMsS0FBSyxHQUFHLFNBQVJBLEtBQVEsQ0FBQ0MsTUFBRCxFQUFZO0VBQzdCLElBQUlBLE1BQUosRUFBWTtJQUNSLElBQU1DLElBQUksR0FBR0MsSUFBSSxDQUFDQyxLQUFMLENBQVdELElBQUksQ0FBQ0UsU0FBTCxDQUFlSixNQUFmLENBQVgsQ0FBYjtJQUNBLE9BQU9GLDZDQUFRLENBQUNHLElBQUQsQ0FBZjtFQUNIOztFQUNELE9BQU8sRUFBUDtBQUNILENBTk07QUFRQSxJQUFNSSxPQUFPLEdBQUcsU0FBVkEsT0FBVSxDQUFDTCxNQUFELEVBQVk7RUFDL0IsSUFBTU0sTUFBTSxHQUFHSixJQUFJLENBQUNFLFNBQUwsQ0FBZUosTUFBZixDQUFmOztFQUNBLElBQUlNLE1BQU0sQ0FBQ0MsYUFBUCxDQUFxQixJQUFyQixNQUErQixDQUFuQyxFQUFzQztJQUNsQyxPQUFPLElBQVA7RUFDSDs7RUFDRCxPQUFPLEtBQVA7QUFDSCxDQU5NIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vLy4vcmVzb3VyY2VzL3Z1ZS9oZWxwZXJzL09iamVjdC5qcz9hZGVhIl0sInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IHJlYWN0aXZlIH0gZnJvbSBcInZ1ZVwiO1xyXG5cclxuZXhwb3J0IGNvbnN0IGNsb25lID0gKG9iamVjdCkgPT4ge1xyXG4gICAgaWYgKG9iamVjdCkge1xyXG4gICAgICAgIGNvbnN0IGNvcHkgPSBKU09OLnBhcnNlKEpTT04uc3RyaW5naWZ5KG9iamVjdCkpO1xyXG4gICAgICAgIHJldHVybiByZWFjdGl2ZShjb3B5KTtcclxuICAgIH1cclxuICAgIHJldHVybiB7fTtcclxufTtcclxuXHJcbmV4cG9ydCBjb25zdCBpc0VtcHR5ID0gKG9iamVjdCkgPT4ge1xyXG4gICAgY29uc3QgcGFyc2VkID0gSlNPTi5zdHJpbmdpZnkob2JqZWN0KTtcclxuICAgIGlmIChwYXJzZWQubG9jYWxlQ29tcGFyZShcInt9XCIpID09PSAwKSB7XHJcbiAgICAgICAgcmV0dXJuIHRydWU7XHJcbiAgICB9XHJcbiAgICByZXR1cm4gZmFsc2U7XHJcbn07XHJcbiJdLCJuYW1lcyI6WyJyZWFjdGl2ZSIsImNsb25lIiwib2JqZWN0IiwiY29weSIsIkpTT04iLCJwYXJzZSIsInN0cmluZ2lmeSIsImlzRW1wdHkiLCJwYXJzZWQiLCJsb2NhbGVDb21wYXJlIl0sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./resources/vue/helpers/Object.js\n");
-
-/***/ }),
-
 /***/ "./resources/vue/components/Limit/LimitForm.vue":
 /*!******************************************************!*\
   !*** ./resources/vue/components/Limit/LimitForm.vue ***!
