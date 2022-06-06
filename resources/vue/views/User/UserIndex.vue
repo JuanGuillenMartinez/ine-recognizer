@@ -157,12 +157,12 @@ export default {
                 this.addEventButtons(item);
             }
         },
-        addEventButtons(element) {
+        async addEventButtons(element) {
             if (element.classList.contains("btn-credentials")) {
-                element.addEventListener("click", () => {
+                await element.addEventListener("click", async () => {
                     const userId = element.dataset.id;
+                    await this.userStore.findCredentials(userId);
                     this.showCredentialsInformation = true;
-                    this.userStore.findCredentials(userId);
                 });
             }
         },

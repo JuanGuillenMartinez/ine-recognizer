@@ -19,6 +19,7 @@ class UserCredentialResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'password' => $this->default_pass,
+            'is_admin' => $this->hasRole('super-admin'),
         ];
     }
 }

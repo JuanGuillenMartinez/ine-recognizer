@@ -21,7 +21,7 @@
         <div class="form-text mb-3">
             La contraseña mostrada es la utilizada al dar de alta al usuario.
         </div>
-        <div class="container-token mb-3">
+        <div v-if="!properties.is_admin" class="container-token mb-3">
             <div>
                 <label class="form-label">Token</label>
                 <input
