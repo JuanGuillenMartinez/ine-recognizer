@@ -25,7 +25,6 @@
                     class="table-users"
                     :columns="headers"
                     :rows="users"
-                    :total="totalRows"
                     @row-selected="showLimitRequestTable"
                     @do-search="changePage"
                 />
@@ -101,9 +100,9 @@ export default {
         userLimitHeaders() {
             return userLimitColumns;
         },
-        totalRows() {
-            return this.userStore.paginate.total;
-        },
+        // totalRows() {
+        //     return this.userStore.paginate.total;
+        // },
     },
     methods: {
         showLimitRequestTable(rowClicked) {

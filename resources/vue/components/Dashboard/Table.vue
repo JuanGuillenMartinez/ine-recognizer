@@ -1,13 +1,12 @@
 <template>
     <table-lite
+        :is-static-mode="true"
         :columns="columns"
         :rows="rows"
         :total="totalCount"
         :sortable="sortable"
         :page-options="quantity"
-        :is-re-search="true"
         @row-clicked="show"
-        @do-search="changePage"
     ></table-lite>
 </template>
 

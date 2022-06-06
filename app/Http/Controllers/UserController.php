@@ -17,8 +17,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(10);
-        return JsonResponse::sendPaginateResponse(UserLimitsResource::collection($users));
+        // $users = User::paginate(10);
+        // return JsonResponse::sendPaginateResponse(UserLimitsResource::collection($users));
+        $users = User::all();
+        return JsonResponse::sendResponse($users);
     }
 
     /**
