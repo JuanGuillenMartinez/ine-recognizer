@@ -204,6 +204,14 @@ export default {
                     this.showCredentialsInformation = true;
                 });
             }
+            if (element.classList.contains("btn-disable")) {
+                await element.addEventListener("click", async () => {
+                    const userId = element.dataset.id;
+                    console.log(userId);
+                    // await this.userStore.findCredentials(userId);
+                    // this.showCredentialsInformation = true;
+                });
+            }
         },
         async generateToken(properties) {
             const userId = properties.id;

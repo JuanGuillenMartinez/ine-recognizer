@@ -26,7 +26,9 @@ export default [
             return (
                 '<button type="button" data-id="' +
                 row.id +
-                '" style="border-radius: 4px; padding: 4px 12px;" class="is-rows-el btn-credentials btn-keys btn-dark"><i style="margin-right: 0px !important;" class="fa-solid fa-key"></i></button>'
+                '" style="border-radius: 4px; padding: 4px 12px;" class="is-rows-el btn-credentials btn-keys btn-dark"><i style="margin-right: 0px !important;" class="fa-solid fa-key"></i></button>' + '<button type="button" data-id="' +
+                row.id +
+                '" id="btn-disable-user" style="border-radius: 4px; padding: 4px 12px;" class="is-rows-el btn-disable btn-keys btn-dark"><i style="margin-right: 0px !important;" class="fa-solid fa-key"></i></button>'
             );
         },
     },
