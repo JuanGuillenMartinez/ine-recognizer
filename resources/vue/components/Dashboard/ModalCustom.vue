@@ -1,0 +1,42 @@
+<template>
+    <CModal :visible="visible" @close="$emit('closeModal')">
+        <CModalHeader>
+            <CModalTitle>
+                <slot name="title" />
+            </CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+            <slot name="body" />
+        </CModalBody>
+        <CModalFooter>
+            <slot name="footer" />
+        </CModalFooter>
+    </CModal>
+</template>
+
+<script>
+import { CModal } from "@coreui/vue";
+import { CModalHeader } from "@coreui/vue";
+import { CModalTitle } from "@coreui/vue";
+import { CModalFooter } from "@coreui/vue";
+import { CButton } from "@coreui/vue";
+import { CModalBody } from "@coreui/vue";
+export default {
+    components: {
+        CModal,
+        CModalHeader,
+        CModalTitle,
+        CModalFooter,
+        CModalBody,
+        CButton,
+    },
+    props: {
+        visible: false,
+        title: String,
+        titleClose: String,
+    },
+    emits: ["closeModal"],
+};
+</script>
+
+<style></style>
