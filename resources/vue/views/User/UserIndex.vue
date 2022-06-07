@@ -1,5 +1,18 @@
 <template>
-    <title-tab>Usuarios</title-tab>
+    <title-tab>
+        <button
+            style="float: left"
+            @click="openUserForm"
+            type="button"
+            class="btn btn-warning btn-add-user"
+        >
+            <i
+                style="margin-right: 0px; font-size: 20px; padding: 0.25rem"
+                class="fa-solid fa-add"
+            ></i>
+        </button>
+        <h1>Usuarios</h1>
+    </title-tab>
     <div class="card">
         <div class="card-body">
             <div class="container">
@@ -29,17 +42,6 @@
                     @do-search="changePage"
                     @is-finished="tableLoadingFinish"
                 />
-                <button
-                    style="float: right"
-                    @click="openUserForm"
-                    type="button"
-                    class="btn btn-success"
-                >
-                    <i
-                        style="margin-right: 0px; font-size: 16px"
-                        class="fa-solid fa-add"
-                    ></i>
-                </button>
             </div>
             <div v-if="showLimitTable" class="limit-request-table">
                 <div class="search-input">
@@ -265,5 +267,10 @@ export default {
 .table-users,
 .limit-table {
     margin-top: 8px;
+}
+.btn-add-user {
+    color: #fff;
+    background-color: #3890cf;
+    border-color: rgb(0 0 0 / 25%);
 }
 </style>
