@@ -12,6 +12,7 @@ use App\Http\Controllers\FaceApi\PersonGroupController;
 use App\Http\Controllers\FaceApi\PersonController as PersonGroupPersonController;
 use App\Http\Controllers\LogRequestController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\VerifyUserIsBanned;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,7 +27,7 @@ use App\Http\Controllers\UserController;
 
 
 
-Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:super-admin', 'active'])->group(function () {
     /** 
         REGISTER USER ENDPOINT 
         */
@@ -52,7 +53,7 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
         Route::get('/logs', [LogRequestController::class, 'index']);
 });
 
-Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () {
+Route::middleware(['auth:sanctum', 'role:super-admin|user', 'active'])->group(function () {
     /** 
      COMMERCE ENDPOINTS 
      */
@@ -71,6 +72,10 @@ Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () 
      */
     Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
     Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
+
+    Route::get('/test', function() {
+        return 'hello';
+    });
 });
 
 /** 
