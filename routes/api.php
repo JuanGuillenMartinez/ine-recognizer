@@ -25,11 +25,6 @@ use App\Http\Controllers\UserController;
 */
 
 
-/** 
- FORM RECOGNIZER ENDPOINTS 
- */
-Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
-Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
 
 Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
     /** 
@@ -53,8 +48,8 @@ Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
         
         /**
         LOG ENDPOINTS
-     */
-    Route::get('/logs', [LogRequestController::class, 'index']);
+        */
+        Route::get('/logs', [LogRequestController::class, 'index']);
 });
 
 Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () {
@@ -71,6 +66,11 @@ Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () 
     Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
     Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
     Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
+    /** 
+     FORM RECOGNIZER ENDPOINTS 
+     */
+    Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
+    Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
 });
 
 /** 
