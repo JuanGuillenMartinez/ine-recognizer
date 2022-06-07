@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { clone } from "../../helpers/Object";
+import { clone, isEmpty } from "../../helpers/Object";
 export default {
     props: {
         object: {
@@ -51,23 +51,37 @@ export default {
     },
     methods: {
         emitSaveEvent() {
-            const isValid = this.validateInputs();
-            console.log(isValid);
-            // this.$emit("save-clicked", this.properties);
+            if (this.validateInputs()) {
+                this.$emit("save-clicked", this.properties);
+            }
         },
         validateInputs() {
             for (var propiedad in this.properties) {
-                console.log(this.properties[propiedad].length);
-                if(this.properties[propiedad].length === 0) {
+                if (this.properties[propiedad].length === 0) {
+                    this.$emit("empty-inputs");
                     return false;
                 }
             }
+            if (!this.validEmail(this.properties["email"])) {
+                this.$emit("invalid-email");
+                return false;
+            }
             return true;
         },
+        validEmail(e) {
+            var filter =
+                /^\s*[\w\-\+_]+(\.[\w\-\+_]+)*\@[\w\-\+_]+\.[\w\-\+_]+(\.[\w\-\+_]+)*\s*$/;
+            return String(e).search(filter) != -1;
+        },
     },
-    emits: ["save-clicked"],
+    emits: ["save-clicked", "empty-inputs", "invalid-email"],
     computed: {
         properties() {
+            if (isEmpty(this.object)) {
+                this.object.name = "";
+                this.object.email = "";
+                this.object.password = "";
+            }
             return clone(this.object);
         },
     },

@@ -84,7 +84,15 @@
                 title="Registrar usuario"
                 title-close="Cerrar"
             >
-                <user-form @save-clicked="saveUser" />
+                <user-form
+                    @save-clicked="saveUser"
+                    @invalid-email="
+                        showAlert('El correo electrónico es invalido.')
+                    "
+                    @empty-inputs="
+                        showAlert('Algunos campos no se encuentran rellenados.')
+                    "
+                />
             </custom-modal>
         </div>
     </div>
@@ -96,6 +104,8 @@ import { mapStores } from "pinia";
 import { useUserStore } from "../../stores/UserStore";
 import userLimitColumns from "../../helpers/TableHeaders/UserLimit";
 import UserForm from "../../components/User/UserForm.vue";
+import { useToast } from "vue-toastification";
+const toast = useToast();
 
 export default {
     components: {
@@ -162,6 +172,11 @@ export default {
                 this.limitInformationSelected.id,
                 limitInformation.limit
             );
+            if (response.success) {
+                toast.success(response.message);
+            } else {
+                toast.warning(response.message);
+            }
             await this.userStore.all();
             this.userSelected = this.userStore.list.reduce((user) => {
                 if (user.id === this.userSelected.id) {
@@ -190,13 +205,27 @@ export default {
         },
         async generateToken(properties) {
             const userId = properties.id;
-            await this.userStore.generateToken(userId);
+            const response = await this.userStore.generateToken(userId);
+            if (response.success) {
+                toast.success(response.message);
+            } else {
+                toast.warning(response.message);
+            }
         },
         openUserForm() {
             this.showUserForm = true;
         },
         async saveUser(properties) {
-            console.log(properties);
+            const response = await this.userStore.registerCommerce(properties);
+            this.showUserForm = false;
+            if (response.success) {
+                toast.success(response.message);
+            } else {
+                toast.warning(response.message);
+            }
+        },
+        showAlert(message) {
+            console.log(message);
         },
     },
     watch: {

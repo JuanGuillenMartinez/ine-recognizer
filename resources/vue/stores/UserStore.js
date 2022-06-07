@@ -66,6 +66,11 @@ export const useUserStore = defineStore("user", {
         async generateToken(userId) {
             const response = await post(`${baseUrl}/${userId}/token`);
             this.userCredentialsSelected.token = response.data.token;
+            return response;
+        },
+        async registerCommerce(properties) {
+            const response = await post("/commerces", properties);
+            return response;
         },
     },
     getters: {
