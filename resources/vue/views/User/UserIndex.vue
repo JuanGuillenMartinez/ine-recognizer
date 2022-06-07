@@ -96,6 +96,26 @@
                     "
                 />
             </custom-modal>
+            <modal-custom
+                @close-modal="showDisableModal = false"
+                :visible="showDisableModal"
+            >
+                <template v-slot:title>
+                    Bloquear usuario {{ `"${userSelected.name}"` }}
+                </template>
+                <template v-slot:body
+                    >Todas las peticiones realizadas por el usuario serán
+                    bloqueadas.</template
+                >
+                <template v-slot:footer>
+                    <CButton color="light" @click="banUser">
+                        Si, continuar
+                    </CButton>
+                    <CButton color="dark" @click="showDisableModal = false">
+                        No
+                    </CButton>
+                </template>
+            </modal-custom>
         </div>
     </div>
 </template>
@@ -107,6 +127,8 @@ import { useUserStore } from "../../stores/UserStore";
 import userLimitColumns from "../../helpers/TableHeaders/UserLimit";
 import UserForm from "../../components/User/UserForm.vue";
 import { useToast } from "vue-toastification";
+import { CButton } from "@coreui/vue";
+
 const toast = useToast();
 
 export default {
@@ -126,7 +148,11 @@ export default {
         CredentialsForm: defineAsyncComponent(() =>
             import("../../components/User/CredentialsForm.vue")
         ),
+        ModalCustom: defineAsyncComponent(() =>
+            import("../../components/Dashboard/ModalCustom.vue")
+        ),
         UserForm,
+        CButton,
     },
     data() {
         return {
@@ -141,6 +167,7 @@ export default {
             userLimits: [],
             showCredentialsInformation: false,
             showUserForm: false,
+            showDisableModal: false,
         };
     },
     computed: {
@@ -151,9 +178,6 @@ export default {
         userLimitHeaders() {
             return userLimitColumns;
         },
-        // totalRows() {
-        //     return this.userStore.paginate.total;
-        // },
     },
     methods: {
         showLimitRequestTable(rowClicked) {
@@ -207,9 +231,7 @@ export default {
             if (element.classList.contains("btn-disable")) {
                 await element.addEventListener("click", async () => {
                     const userId = element.dataset.id;
-                    console.log(userId);
-                    // await this.userStore.findCredentials(userId);
-                    // this.showCredentialsInformation = true;
+                    this.showDisableModal = true;
                 });
             }
         },
@@ -236,6 +258,10 @@ export default {
         },
         showAlert(message) {
             console.log(message);
+        },
+        async banUser() {
+            const userId = this.userSelected.id;
+            this.userStore.banUser(userId);
         },
     },
     watch: {

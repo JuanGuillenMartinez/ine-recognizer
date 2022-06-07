@@ -72,6 +72,11 @@ export const useUserStore = defineStore("user", {
             const response = await post("/commerces", properties);
             return response;
         },
+        async banUser(userId) {
+            console.log(userId);
+            // const response = await post("/commerces", properties);
+            // return response;
+        },
     },
     getters: {
         filter: (state) => {
