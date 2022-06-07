@@ -24,9 +24,6 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
-Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
-Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
 
 /** 
  FORM RECOGNIZER ENDPOINTS 
@@ -37,23 +34,24 @@ Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeB
 Route::middleware(['auth:sanctum', 'role:super-admin'])->group(function () {
     /** 
         REGISTER USER ENDPOINT 
-     */
+        */
     Route::post('/auth/register', [AuthController::class, 'register']);
-
+    
     /** 
         REGISTER COMMERCE ENDPOINT 
      */
     Route::post('/commerces', [CommerceController::class, 'create']);
-
+    
     /**
         USER ENDPOINTS
-     */
-    Route::apiResource('/users', UserController::class);
-    Route::put('/users/{userId}/limits', [UserController::class, 'updateLimits']);
-    Route::get('/users/{userId}/credentials', [UserController::class, 'credentials']);
-    Route::post('/users/{userId}/token', [UserController::class, 'generateToken']);
-
-    /**
+        */
+        Route::apiResource('/users', UserController::class);
+        Route::put('/users/{userId}/limits', [UserController::class, 'updateLimits']);
+        Route::get('/users/{userId}/credentials', [UserController::class, 'credentials']);
+        Route::post('/users/{userId}/token', [UserController::class, 'generateToken']);
+        Route::put('/users/{userId}/ban', [UserController::class, 'banUser']);
+        
+        /**
         LOG ENDPOINTS
      */
     Route::get('/logs', [LogRequestController::class, 'index']);
@@ -70,10 +68,13 @@ Route::middleware(['auth:sanctum', 'role:super-admin|user'])->group(function () 
     /** 
      FACE API ENDPOINTS 
      */
+    Route::post('/faceapi/detect', [FaceApiController::class, 'detectFace']);
+    Route::post('/faceapi/analyze/face2face', [FaceApiController::class, 'verifyFaceToFace']);
+    Route::post('/faceapi/analyze/face2person', [FaceApiController::class, 'verifyFaceToPerson']);
 });
 
 /** 
-    PUBLIC LOGIN ENDPPOINT 
+ PUBLIC LOGIN ENDPPOINT 
  */
 Route::post('/auth/login', [AuthController::class, 'login']);
 
