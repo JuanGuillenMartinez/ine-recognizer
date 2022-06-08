@@ -72,10 +72,6 @@ Route::middleware(['auth:sanctum', 'role:super-admin|user', 'active'])->group(fu
      */
     Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
     Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
-
-    Route::get('/test', function() {
-        return 'hello';
-    });
 });
 
 /** 
