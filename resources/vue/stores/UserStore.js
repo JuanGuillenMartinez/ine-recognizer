@@ -19,13 +19,19 @@ export const useUserStore = defineStore("user", {
     },
     actions: {
         async all() {
-            this.isLoading = true;
-            const response = await getAll(baseUrl);
-            const { data } = response;
-            this.list = data;
-            this.paginate = response.links;
-            this.isLoading = false;
-            return response;
+            try {
+                this.isLoading = true;
+                const response = await getAll(baseUrl);
+                const { data } = response;
+                this.list = data;
+                this.isLoading = false;
+                return response;
+            } catch (error) {
+                const {
+                    response: { data },
+                } = error;
+                return data;
+            }
         },
         async find(id) {
             this.isLoading = true;
@@ -74,8 +80,8 @@ export const useUserStore = defineStore("user", {
         },
         async banUser(userId) {
             console.log(userId);
-            // const response = await post("/commerces", properties);
-            // return response;
+            const response = await post(`${baseUrl}/${userId}/ban`, {});
+            return response;
         },
     },
     getters: {

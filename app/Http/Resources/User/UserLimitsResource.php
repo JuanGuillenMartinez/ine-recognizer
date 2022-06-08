@@ -20,6 +20,7 @@ class UserLimitsResource extends JsonResource
             'email' => $this->email,
             'name' => $this->name,
             'limit' => LimitResource::collection($this->requestLimit),
+            'is_banned' => isset($this->banned_at),
         ];
     }
 }

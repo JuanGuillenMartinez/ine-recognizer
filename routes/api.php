@@ -45,7 +45,8 @@ Route::middleware(['auth:sanctum', 'role:super-admin', 'active'])->group(functio
         Route::put('/users/{userId}/limits', [UserController::class, 'updateLimits']);
         Route::get('/users/{userId}/credentials', [UserController::class, 'credentials']);
         Route::post('/users/{userId}/token', [UserController::class, 'generateToken']);
-        Route::put('/users/{userId}/ban', [UserController::class, 'banUser']);
+        Route::post('/users/{userId}/ban', [UserController::class, 'banUser']);
+        Route::post('/users/{userId}/unban', [UserController::class, 'unbanUser']);
         
         /**
         LOG ENDPOINTS

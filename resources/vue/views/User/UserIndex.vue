@@ -261,7 +261,15 @@ export default {
         },
         async banUser() {
             const userId = this.userSelected.id;
-            this.userStore.banUser(userId);
+            const response = await this.userStore.banUser(userId);
+            this.showDisableModal = false;
+            toast.success(response.message);
+        },
+        async unbanUser() {
+            const userId = this.userSelected.id;
+            const response = await this.userStore.banUser(userId);
+            this.showDisableModal = false;
+            toast.success(response.message);
         },
     },
     watch: {
@@ -278,7 +286,10 @@ export default {
         },
     },
     async mounted() {
-        await this.userStore.all();
+        const response = await this.userStore.all();
+        if (!response.success) {
+            toast.error(response.message);
+        }
         this.users = this.userStore.list;
     },
 };

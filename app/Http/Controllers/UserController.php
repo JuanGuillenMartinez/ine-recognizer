@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Helpers\JsonResponse;
 use App\Http\Resources\User\UserLimitsResource;
 use App\Http\Resources\User\UserCredentialResource;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -95,5 +96,34 @@ class UserController extends Controller
         return JsonResponse::sendResponse([
             'token' => $token->plainTextToken
         ]);
+    }
+
+    public function banUser($userId)
+    {
+        $user = User::find($userId);
+        if (!isset($user)) {
+            return JsonResponse::sendError('El usuario no se encuentra registrado');
+        }
+        $user->banned_at = Carbon::now();
+        if ($user->save()) {
+            return JsonResponse::sendResponse($user, 'El usuario ha sido dado de baja del sistema.');
+        }
+        return JsonResponse::sendError('Ha ocurrido un error');
+    }
+
+    public function unbanUser($userId)
+    {
+        $user = User::find($userId);
+        if (!isset($user)) {
+            return JsonResponse::sendError('El usuario no se encuentra registrado');
+        }
+        if (!isset($user->banned_at)) {
+            return JsonResponse::sendError('El usuario se encuentra activo.');
+        }
+        $user->banned_at = null;
+        if ($user->save()) {
+            return JsonResponse::sendResponse($user, 'Se ha removido el bloqueo del usuario.');
+        }
+        return JsonResponse::sendError('Ha ocurrido un error');
     }
 }
