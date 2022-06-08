@@ -83,6 +83,11 @@ export const useUserStore = defineStore("user", {
             const response = await post(`${baseUrl}/${userId}/ban`, {});
             return response;
         },
+        async unbanUser(userId) {
+            console.log(userId);
+            const response = await post(`${baseUrl}/${userId}/unban`, {});
+            return response;
+        },
     },
     getters: {
         filter: (state) => {

@@ -116,6 +116,25 @@
                     </CButton>
                 </template>
             </modal-custom>
+            <modal-custom
+                @close-modal="showUnbanModal = false"
+                :visible="showUnbanModal"
+            >
+                <template v-slot:title>
+                    Desbloquear usuario {{ `"${userSelected.name}"` }}
+                </template>
+                <template v-slot:body
+                    >Se permitirá el acceso del usuario al servicio nuevamente.</template
+                >
+                <template v-slot:footer>
+                    <CButton color="light" @click="unbanUser">
+                        Si, continuar
+                    </CButton>
+                    <CButton color="dark" @click="showUnbanModal = false">
+                        No
+                    </CButton>
+                </template>
+            </modal-custom>
         </div>
     </div>
 </template>
@@ -168,6 +187,7 @@ export default {
             showCredentialsInformation: false,
             showUserForm: false,
             showDisableModal: false,
+            showUnbanModal: false,
         };
     },
     computed: {
@@ -234,6 +254,12 @@ export default {
                     this.showDisableModal = true;
                 });
             }
+            if (element.classList.contains("btn-unban")) {
+                await element.addEventListener("click", async () => {
+                    const userId = element.dataset.id;
+                    this.showUnbanModal = true;
+                });
+            }
         },
         async generateToken(properties) {
             const userId = properties.id;
@@ -262,13 +288,17 @@ export default {
         async banUser() {
             const userId = this.userSelected.id;
             const response = await this.userStore.banUser(userId);
+            await this.userStore.all();
+            this.users = this.userStore.list;
             this.showDisableModal = false;
             toast.success(response.message);
         },
         async unbanUser() {
             const userId = this.userSelected.id;
-            const response = await this.userStore.banUser(userId);
-            this.showDisableModal = false;
+            const response = await this.userStore.unbanUser(userId);
+            await this.userStore.all();
+            this.users = this.userStore.list;
+            this.showUnbanModal = false;
             toast.success(response.message);
         },
     },
