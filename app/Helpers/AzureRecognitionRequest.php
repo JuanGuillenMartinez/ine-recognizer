@@ -12,8 +12,9 @@ class AzureRecognitionRequest
 
     public function __construct(string $azureModelId)
     {
+        $formRecognizerUrl = env('FORM_RECOGNIZER_BASE_URL');
         $this->azureModelId = $azureModelId;
-        $this->baseUrl = "https://eastus2.api.cognitive.microsoft.com/formrecognizer/documentModels/{$azureModelId}";
+        $this->baseUrl = "{$formRecognizerUrl}/{$azureModelId}";
     }
 
     public function sendRequest($documentUrl): string
