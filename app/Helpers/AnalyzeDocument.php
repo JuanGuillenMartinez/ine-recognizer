@@ -6,7 +6,8 @@ class AnalyzeDocument
 {
     public static function analyzeDocument(string $documentUrl): array
     {
-        $azureHandler = new AzureRecognitionRequest('composed_ine_model');
+        $modelRecognition = env('FORM_RECOGNIZER_MODEL');
+        $azureHandler = new AzureRecognitionRequest($modelRecognition);
         $responseId = $azureHandler->sendRequest($documentUrl);
         $rawResponse = $azureHandler->getResults($responseId);
         $formattedResponse = AnalyzeDocument::formatResults($rawResponse);
