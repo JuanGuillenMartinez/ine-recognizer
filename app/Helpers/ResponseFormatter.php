@@ -31,7 +31,8 @@ class ResponseFormatter
         foreach ($formattedResponse as $key => $item) {
             if (isset($item['sexo'])) {
                 $aux = str_replace('SEXO', '', $item['sexo']);
-                $formattedResponse[$key]['sexo'] = trim($aux);
+                $aux = trim($aux);
+                $formattedResponse[$key]['sexo'] = str_replace('_', '', $aux);
             }
         }
         return $formattedResponse;

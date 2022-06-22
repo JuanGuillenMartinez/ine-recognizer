@@ -794,6 +794,35 @@
                     "seccion": {
                         "type": "string",
                         "example": "0001"
+                    },
+                    "informacion_domicilio": {
+                        "type": "object",
+                        "properties": {
+                            "primer_direccion": {
+                                "type": "string",
+                                "example": "Av. Aztecas"
+                            },
+                            "segunda_direccion": {
+                                "type": "string",
+                                "example": "Los Reyes, Coyoacán"
+                            },
+                            "numero_exterior": {
+                                "type": "string",
+                                "example": "224"
+                            },
+                            "estado": {
+                                "type": "string",
+                                "example": "TAB"
+                            },
+                            "ciudad": {
+                                "type": "string",
+                                "example": "Centro"
+                            },
+                            "codigo_postal": {
+                                "type": "string",
+                                "example": "Av. 04330"
+                            }
+                        }
                     }
                 }
             },

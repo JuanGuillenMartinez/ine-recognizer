@@ -121,9 +121,10 @@ class CommerceController extends Controller
     private function formatResponseData($faceapiPerson, $dataExtracted, $person)
     {
         $personInformation['person'] = $dataExtracted;
-        $personInformation['person_id'] = $faceapiPerson->id;
+        $personInformation['person'] = $dataExtracted;
+        $personInformation['person']['domicilio'] = $person->address;
         $personInformation['faceapi_person_id'] = $faceapiPerson->faceapi_person_id;
-        $personInformation['informacion_direccion'] = new AddressInformationResource($person->addressInformation);
+        $personInformation['informacion_domicilio'] = new AddressInformationResource($person->addressInformation);
         return $personInformation;
     }
 
@@ -164,12 +165,12 @@ class CommerceController extends Controller
 
     protected function formatAddress($addressInformation)
     {
-
-        return "{$addressInformation['first_address']} {$addressInformation['exterior_number']} {$addressInformation['second_address']} {$addressInformation['zip_code']} {$addressInformation['city']} {$addressInformation['state']}";
+        $address = "{$addressInformation['first_address']} {$addressInformation['exterior_number']} {$addressInformation['second_address']} {$addressInformation['zip_code']} {$addressInformation['city']} {$addressInformation['state']}";
+        return trim($address);
     }
 
     protected function unsetAddressFromResponse($data) {
-        unset($data['person']['primera_direccion']);
+        unset($data['person']['primer_direccion']);
         unset($data['person']['segunda_direccion']);
         unset($data['person']['numero_exterior']);
         unset($data['person']['nombre_estado']);
