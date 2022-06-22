@@ -11,7 +11,9 @@ use App\Helpers\JsonResponse;
 use App\Helpers\FaceApiRequest;
 use App\Helpers\AnalyzeDocument;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\AddressInformationResource;
 use App\Jobs\AnalyzeBackIneJob;
+use App\Models\Address;
 use App\Models\FaceapiPerson;
 use App\Models\IneInformation;
 use Illuminate\Support\Facades\Hash;
@@ -89,7 +91,7 @@ class CommerceController extends Controller
             }
             $commerce->train();
         }
-        $data = $this->formatResponseData($faceapiPerson, $dataExtracted);
+        $data = $this->formatResponseData($faceapiPerson, $dataExtracted, $person);
         return JsonResponse::sendResponse($data);
     }
 
@@ -98,6 +100,7 @@ class CommerceController extends Controller
         $searchParams = [
             'clave_elector' => $dataExtracted['clave_elector']
         ];
+        $address = $this->extractAddressInformation($dataExtracted);
         $attributes = [
             'name' => $dataExtracted['nombre'],
             'father_lastname' => $dataExtracted['apellido_paterno'],
@@ -105,18 +108,21 @@ class CommerceController extends Controller
             'curp' => $dataExtracted['curp'],
             'gender' => $dataExtracted['sexo'],
             'birthdate' => $dataExtracted['nacimiento'],
-            'address' => $dataExtracted['domicilio'],
+            'address' => $this->formatAddress($address),
             'ine_url' => $ineUrl,
         ];
         $person = Person::firstOrCreate($searchParams, $attributes);
+        $address['person_id'] = $person->id;
+        Address::create($address);
         return $person;
     }
 
-    private function formatResponseData($faceapiPerson, $dataExtracted)
+    private function formatResponseData($faceapiPerson, $dataExtracted, $person)
     {
         $personInformation['person'] = $dataExtracted;
         $personInformation['person_id'] = $faceapiPerson->id;
         $personInformation['faceapi_person_id'] = $faceapiPerson->faceapi_person_id;
+        $personInformation['informacion_direccion'] = new AddressInformationResource($person->addressInformation);
         return $personInformation;
     }
 
@@ -142,5 +148,20 @@ class CommerceController extends Controller
             'height' => $faceRectangle->height,
         ]);
         return $ineResult;
+    }
+
+    protected function extractAddressInformation($dataExtracted) {
+        $address['first_address'] = isset($dataExtracted['primer_direccion']) ? $dataExtracted['primer_direccion'] : "";
+        $address['second_address'] = isset($dataExtracted['segunda_direccion']) ? $dataExtracted['segunda_direccion'] : "";
+        $address['exterior_number'] = isset($dataExtracted['numero_exterior']) ? $dataExtracted['numero_exterior'] : "";
+        $address['state'] = isset($dataExtracted['nombre_estado']) ? $dataExtracted['nombre_estado'] : "";
+        $address['city'] = isset($dataExtracted['nombre_municipio']) ? $dataExtracted['nombre_municipio'] : "";
+        $address['zip_code'] = isset($dataExtracted['codigo_postal']) ? $dataExtracted['codigo_postal'] : "";
+        return $address;
+    }
+
+    protected function formatAddress($addressInformation) {
+        
+        return "{$addressInformation['first_address']} {$addressInformation['exterior_number']} {$addressInformation['second_address']} {$addressInformation['zip_code']} {$addressInformation['city']}, {$addressInformation['state']}";
     }
 }
