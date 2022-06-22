@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Commerce;
 
+use App\Exceptions\WrongImageUrl;
 use App\Models\User;
 use App\Models\Person;
 use App\Models\Commerce;
@@ -75,6 +76,9 @@ class CommerceController extends Controller
         }
         $results = AnalyzeDocument::analyzeDocument($urlIne);
         $dataExtracted = $results[0];
+        if(!isset($dataExtracted['clave_elector'])) {
+            throw new WrongImageUrl('No se ha podido reconocer la clade de elector del documento. Asegúrese que la calidad del documento sea buena.', 400);
+        }
         $person = Person::where('clave_elector', $dataExtracted['clave_elector'])->first();
         if (!isset($person)) {
             $person = $this->registerPerson($dataExtracted, $urlIne);
