@@ -40,4 +40,8 @@ class Person extends Model
     {
         return $this->faceapiPerson->faceapi_person_id;
     }
+
+    public function addressInformation() {
+        return $this->hasOne(Address::class);
+    }
 }
