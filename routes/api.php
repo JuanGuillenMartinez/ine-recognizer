@@ -71,8 +71,8 @@ Route::middleware(['auth:sanctum', 'role:super-admin|user', 'active'])->group(fu
     /** 
      FORM RECOGNIZER ENDPOINTS 
      */
-    Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne']);
-    Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne']);
+    Route::post('/analyze/documents/ine/front', [DocumentController::class, 'analyzeFrontIne'])->middleware('limit:verify_identity');
+    Route::post('/analyze/documents/ine/back', [DocumentController::class, 'analyzeBackIne'])->middleware('limit:verify_identity');
 });
 
 /** 

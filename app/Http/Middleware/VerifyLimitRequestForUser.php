@@ -22,7 +22,7 @@ class VerifyLimitRequestForUser
     {
         $userRequest = ModelsRequest::where('name', $name)->first();
         if(!isset($userRequest)) {
-            throw new RequestLimitReached('Ha alcanzado el limite de peticiones disponible. Comuníquese con su administrador.', 400);
+            throw new RequestLimitReached('No se encuentran permisos registrados para realizar peticiones. Comuníquese con su administrador.', 400);
         }
         $user = $request->user();
         $result = $user->registerRequestMade($userRequest);
