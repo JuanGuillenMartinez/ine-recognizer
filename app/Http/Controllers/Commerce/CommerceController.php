@@ -23,7 +23,7 @@ class CommerceController extends Controller
     public function create(Request $request)
     {
         $user = User::where(['email' => $request->email])->first();
-        if(isset($user)) {
+        if (isset($user)) {
             return JsonResponse::sendError('Ya se encuentra registrado un comercio con el correo proporcionado');
         }
         $user = User::create([
@@ -38,7 +38,7 @@ class CommerceController extends Controller
             'name' => $request->name,
         ];
         $commerce = Commerce::where('user_id', $user->id)->first();
-        if(isset($commerce)) {
+        if (isset($commerce)) {
             return JsonResponse::sendError('Ya se encuentra registrado un comercio con el correo proporcionado');
         }
         $commerce = new Commerce($attributes);
@@ -92,6 +92,7 @@ class CommerceController extends Controller
             $commerce->train();
         }
         $data = $this->formatResponseData($faceapiPerson, $dataExtracted, $person);
+        $data = $this->unsetAddressFromResponse($data);
         return JsonResponse::sendResponse($data);
     }
 
@@ -150,7 +151,8 @@ class CommerceController extends Controller
         return $ineResult;
     }
 
-    protected function extractAddressInformation($dataExtracted) {
+    protected function extractAddressInformation($dataExtracted)
+    {
         $address['first_address'] = isset($dataExtracted['primer_direccion']) ? $dataExtracted['primer_direccion'] : "";
         $address['second_address'] = isset($dataExtracted['segunda_direccion']) ? $dataExtracted['segunda_direccion'] : "";
         $address['exterior_number'] = isset($dataExtracted['numero_exterior']) ? $dataExtracted['numero_exterior'] : "";
@@ -160,8 +162,19 @@ class CommerceController extends Controller
         return $address;
     }
 
-    protected function formatAddress($addressInformation) {
-        
-        return "{$addressInformation['first_address']} {$addressInformation['exterior_number']} {$addressInformation['second_address']} {$addressInformation['zip_code']} {$addressInformation['city']}, {$addressInformation['state']}";
+    protected function formatAddress($addressInformation)
+    {
+
+        return "{$addressInformation['first_address']} {$addressInformation['exterior_number']} {$addressInformation['second_address']} {$addressInformation['zip_code']} {$addressInformation['city']} {$addressInformation['state']}";
+    }
+
+    protected function unsetAddressFromResponse($data) {
+        unset($data['person']['primera_direccion']);
+        unset($data['person']['segunda_direccion']);
+        unset($data['person']['numero_exterior']);
+        unset($data['person']['nombre_estado']);
+        unset($data['person']['nombre_municipio']);
+        unset($data['person']['codigo_postal']);
+        return $data;
     }
 }
