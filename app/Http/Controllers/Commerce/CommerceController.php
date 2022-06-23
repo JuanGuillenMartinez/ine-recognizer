@@ -193,7 +193,7 @@ class CommerceController extends Controller
     {
         if (isset($data['person']['nombre'])) {
             $personInformation = $data['person'];
-            $personName = trim("Juan");
+            $personName = trim($personInformation['nombre']);
             $nameExploded = explode(' ', $personName);
             $personInformation['primer_nombre'] = array_shift($nameExploded);
             if (count($nameExploded) > 0) {
