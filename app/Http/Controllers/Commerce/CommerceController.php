@@ -76,7 +76,7 @@ class CommerceController extends Controller
         }
         $results = AnalyzeDocument::analyzeDocument($urlIne);
         $dataExtracted = $results[0];
-        if(!isset($dataExtracted['clave_elector'])) {
+        if (!isset($dataExtracted['clave_elector'])) {
             throw new WrongImageUrl('No se ha podido reconocer la clade de elector del documento. Asegúrese que la calidad del documento sea buena.', 400);
         }
         $person = Person::where('clave_elector', $dataExtracted['clave_elector'])->first();
@@ -95,11 +95,12 @@ class CommerceController extends Controller
             }
             $commerce->train();
         }
-        if(!isset($person->addressInformation)) {
+        if (!isset($person->addressInformation)) {
             $addressInformation = $this->extractAddressInformation($dataExtracted);
             $person->setAddressInformation($addressInformation);
         }
         $data = $this->formatResponseData($faceapiPerson, $dataExtracted, $person);
+        $data['person'] = $this->formatPersonName($data);
         $data = $this->unsetAddressFromResponse($data);
         return JsonResponse::sendResponse($data);
     }
@@ -177,7 +178,8 @@ class CommerceController extends Controller
         return trim($address);
     }
 
-    protected function unsetAddressFromResponse($data) {
+    protected function unsetAddressFromResponse($data)
+    {
         unset($data['person']['primer_direccion']);
         unset($data['person']['segunda_direccion']);
         unset($data['person']['numero_exterior']);
@@ -185,5 +187,20 @@ class CommerceController extends Controller
         unset($data['person']['nombre_municipio']);
         unset($data['person']['codigo_postal']);
         return $data;
+    }
+
+    protected function formatPersonName($data)
+    {
+        if (isset($data['person']['nombre'])) {
+            $personInformation = $data['person'];
+            $personName = trim("Juan");
+            $nameExploded = explode(' ', $personName);
+            $personInformation['primer_nombre'] = array_shift($nameExploded);
+            if (count($nameExploded) > 0) {
+                $personInformation['segundo_nombre'] = implode(' ', $nameExploded);
+            }
+            return $personInformation;
+        }
+        return $data['person'];
     }
 }
