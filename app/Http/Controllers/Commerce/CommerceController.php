@@ -130,8 +130,8 @@ class CommerceController extends Controller
     private function formatResponseData($faceapiPerson, $dataExtracted, $person)
     {
         $personInformation['person'] = $dataExtracted;
-        $personInformation['person'] = $dataExtracted;
         $personInformation['person']['domicilio'] = $person->address;
+        $personInformation['person']['id'] = $person->id;
         $personInformation['faceapi_person_id'] = $faceapiPerson->faceapi_person_id;
         $personInformation['informacion_domicilio'] = new AddressInformationResource($person->addressInformation);
         return $personInformation;
