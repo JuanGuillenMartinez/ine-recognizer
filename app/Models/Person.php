@@ -32,7 +32,8 @@ class Person extends Model
         return $this->hasOne(FaceapiPerson::class);
     }
 
-    public function ineInformation() {
+    public function ineInformation()
+    {
         return $this->hasOne(IneDetail::class);
     }
 
@@ -41,7 +42,15 @@ class Person extends Model
         return $this->faceapiPerson->faceapi_person_id;
     }
 
-    public function addressInformation() {
+    public function addressInformation()
+    {
         return $this->hasOne(Address::class);
+    }
+
+    public function setAddressInformation($attributes)
+    {
+        $attributes['person_id'] = $this->id;
+        Address::create($attributes);
+        $this->refresh();
     }
 }

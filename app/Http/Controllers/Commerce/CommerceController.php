@@ -95,6 +95,10 @@ class CommerceController extends Controller
             }
             $commerce->train();
         }
+        if(!isset($person->addressInformation)) {
+            $addressInformation = $this->extractAddressInformation($dataExtracted);
+            $person->setAddressInformation($addressInformation);
+        }
         $data = $this->formatResponseData($faceapiPerson, $dataExtracted, $person);
         $data = $this->unsetAddressFromResponse($data);
         return JsonResponse::sendResponse($data);
