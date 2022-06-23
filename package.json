@@ -28,6 +28,7 @@
         "pinia": "^2.0.14",
         "vue": "^3.2.36",
         "vue-toastification": "^2.0.0-rc.5",
+        "vue3-easy-data-table": "^1.2.15",
         "vue3-table-lite": "^1.2.2"
     }
 }
