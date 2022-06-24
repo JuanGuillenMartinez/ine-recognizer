@@ -12,14 +12,16 @@ export const useLogStore = defineStore("log", {
             finded: {},
             selected: {},
             searchParam: "",
+            pagination: {},
         };
     },
     actions: {
         async all() {
             this.isLoading = true;
             const response = await getAll(baseUrl);
-            const { data } = response;
+            const { data, paginated } = response;
             this.list = data;
+            this.pagination = paginated;
             this.isLoading = false;
             return response;
         },
@@ -38,6 +40,15 @@ export const useLogStore = defineStore("log", {
             this.isLoading = false;
             return response;
         },
+        async rowsPaginated(page, rowsPerPage) {
+            this.isLoading = true;
+            const response = await get(`${baseUrl}?page=${page}&per_page=${rowsPerPage}`);
+            const { data, paginated } = response;
+            this.pagination = paginated;
+            this.list = data;
+            this.isLoading = false;
+            return response;
+        }
     },
     getters: {
         listFormatted() {

@@ -10,9 +10,10 @@ use Illuminate\Http\Request;
 
 class LogRequestController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $logs = LogRequest::paginate(10);
+        $perPage = isset($request->perPage) ? $request->perPage : 10;
+        $logs = LogRequest::paginate($perPage);
         return JsonResponse::sendPaginatedResponse(LogRequestResource::collection($logs));
     }
 }

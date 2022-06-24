@@ -20,7 +20,14 @@
             </div>
         </div>
         <div class="card-body">
-            <custom-table :columns="logHeaders" :rows="logs" />
+            <log-table
+                @do-search="searchRows"
+                :total-count="logStore.pagination.total"
+                :columns="logHeaders"
+                :rows="logs"
+                :is-loading="tableIsLoading"
+            />
+            <!-- <custom-table :columns="logHeaders" :rows="logs" /> -->
         </div>
     </div>
 </template>
@@ -38,14 +45,18 @@ export default {
         TitleTab: defineAsyncComponent(() =>
             import("../../components/Dashboard/TitleTab.vue")
         ),
+        LogTable: defineAsyncComponent(() =>
+            import("../../components/Log/LogTable.vue")
+        ),
     },
     data() {
         return {
             logHeaders: logColumns,
+            logs: [],
+            tableIsLoading: true,
             ipInput: "",
             usuarioInput: "",
             idInput: "",
-            logs: [],
         };
     },
     computed: {
@@ -62,9 +73,18 @@ export default {
             this.logs = this.logStore.filter("id", newVal);
         },
     },
+    methods: {
+        async searchRows(params) {
+            this.tableIsLoading = true;
+            const response = await this.logStore.rowsPaginated(params.page, params.perPage);
+            this.logs = response.data;
+            this.tableIsLoading = false;
+        },
+    },
     async mounted() {
-        await this.logStore.all();
-        this.logs = this.logStore.list;
+        const response = await this.logStore.all();
+        this.logs = response.data;
+        this.tableIsLoading = false;
     },
 };
 </script>

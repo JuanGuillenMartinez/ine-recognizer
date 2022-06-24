@@ -37,8 +37,8 @@ export default {
     },
     data() {
         return {
-            userTabIsClicked: true,
-            logTabIsClicked: false,
+            userTabIsClicked: false,
+            logTabIsClicked: true,
         };
     },
     methods: {
