@@ -68,6 +68,9 @@ class CommerceController extends Controller
     public function addPerson(Request $request, $commerceId)
     {
         $commerce = Commerce::find($commerceId);
+        if (!isset($commerce->faceapiPersonGroup)) {
+            return JsonResponse::sendError('No se encuentra un comercio registrado con el ID proporcionado');
+        }
         $personGroup = $commerce->faceapiPersonGroup;
         $urlIne = $request->photo_url;
         $backIne = $request->back_photo_url;
@@ -130,8 +133,8 @@ class CommerceController extends Controller
     private function formatResponseData($faceapiPerson, $dataExtracted, $person)
     {
         $personInformation['person'] = $dataExtracted;
-        $personInformation['person'] = $dataExtracted;
         $personInformation['person']['domicilio'] = $person->address;
+        $personInformation['person']['id'] = $faceapiPerson->id;
         $personInformation['faceapi_person_id'] = $faceapiPerson->faceapi_person_id;
         $personInformation['informacion_domicilio'] = new AddressInformationResource($person->addressInformation);
         return $personInformation;
