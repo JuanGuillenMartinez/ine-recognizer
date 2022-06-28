@@ -119,9 +119,6 @@ class CommerceController extends Controller
             $addressInformation = $this->extractAddressInformation($dataExtracted);
             $person->setAddressInformation($addressInformation);
         }
-        // $data = $this->formatResponseData($faceapiPerson, $dataExtracted, $person);
-        // $data['person'] = $this->formatPersonName($data);
-        // $data = $this->unsetAddressFromResponse($data);
         $personInformation = new FaceApiPersonResource($faceapiPerson);
         return JsonResponse::sendResponse($personInformation);
     }
@@ -145,16 +142,6 @@ class CommerceController extends Controller
         $person = Person::firstOrCreate($searchParams, $attributes);
         $person->setAddressInformation($address);
         return $person;
-    }
-
-    private function formatResponseData($faceapiPerson, $dataExtracted, $person)
-    {
-        $personInformation['person'] = $dataExtracted;
-        $personInformation['person']['domicilio'] = $person->address;
-        $personInformation['person']['id'] = $faceapiPerson->id;
-        $personInformation['faceapi_person_id'] = $faceapiPerson->faceapi_person_id;
-        $personInformation['informacion_domicilio'] = new AddressInformationResource($person->addressInformation);
-        return $personInformation;
     }
 
     private function detectFacesOnIne($person, $urlImage)
@@ -209,32 +196,6 @@ class CommerceController extends Controller
     {
         $address = "{$addressInformation['first_address']} {$addressInformation['exterior_number']} {$addressInformation['second_address']} {$addressInformation['zip_code']} {$addressInformation['city']} {$addressInformation['state']}";
         return trim($address);
-    }
-
-    protected function unsetAddressFromResponse($data)
-    {
-        unset($data['person']['primer_direccion']);
-        unset($data['person']['segunda_direccion']);
-        unset($data['person']['numero_exterior']);
-        unset($data['person']['nombre_estado']);
-        unset($data['person']['nombre_municipio']);
-        unset($data['person']['codigo_postal']);
-        return $data;
-    }
-
-    protected function formatPersonName($data)
-    {
-        if (isset($data['person']['nombre'])) {
-            $personInformation = $data['person'];
-            $personName = trim($personInformation['nombre']);
-            $nameExploded = explode(' ', $personName);
-            $personInformation['primer_nombre'] = array_shift($nameExploded);
-            if (count($nameExploded) > 0) {
-                $personInformation['segundo_nombre'] = implode(' ', $nameExploded);
-            }
-            return $personInformation;
-        }
-        return $data['person'];
     }
 
     private function extractLastIndexFromText($textLine)
