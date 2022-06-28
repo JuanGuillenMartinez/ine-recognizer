@@ -16,6 +16,10 @@ class PersonController extends Controller
 {
     public function analyzeFaceToPerson(Request $request, $commerceId, $personId)
     {
+        $request->validate([
+            'url_image' => 'string|required',
+        ]);
+
         $faceapiPerson = FaceapiPerson::find($personId);
         $urlImage = $request->url_image;
         if (!isset($faceapiPerson)) {

@@ -68,6 +68,11 @@ class CommerceController extends Controller
 
     public function addPerson(Request $request, $commerceId)
     {
+        $request->validate([
+            'photo_url' => 'string|required',
+            'back_photo_url' => 'string|required',
+        ]);
+        
         $commerce = Commerce::find($commerceId);
         //* Verificación de la existencia del comercio
         if (!isset($commerce)) {
