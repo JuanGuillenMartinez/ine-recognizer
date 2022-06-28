@@ -125,7 +125,9 @@ class CommerceController extends Controller
             $person->setAddressInformation($addressInformation);
         }
         $personInformation = new FaceApiPersonResource($faceapiPerson);
-        return JsonResponse::sendResponse($personInformation);
+        $arrayResponse = json_decode($personInformation->toJson(), true);
+        $arrayResponse['person']['id'] = $faceapiPerson->id;
+        return JsonResponse::sendResponse($arrayResponse);
     }
 
     private function registerPerson($dataExtracted, $ineUrl)
