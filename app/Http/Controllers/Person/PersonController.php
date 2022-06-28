@@ -21,6 +21,10 @@ class PersonController extends Controller
         if (!isset($faceapiPerson)) {
             return JsonResponse::sendError('El ID proporcionado es incorrecto');
         }
+        $commerceFaceApiId = $faceapiPerson->faceapiPersonGroup->commerce_id;
+        if (intval($commerceId) !== $commerceFaceApiId) {
+            return JsonResponse::sendError('La persona no se encuentra registrada en el comercio');
+        }
         $personGroup = $faceapiPerson->faceapiPersonGroup;
         $faceapiRequest = new FaceApiRequest();
         $response = $faceapiRequest->verifyFaceToPerson($urlImage, $personGroup->person_group_id, $faceapiPerson->faceapi_person_id);
