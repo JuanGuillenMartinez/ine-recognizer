@@ -13,6 +13,7 @@ use App\Helpers\FaceApiRequest;
 use App\Helpers\AnalyzeDocument;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AddressInformationResource;
+use App\Http\Resources\FaceApiPersonResource;
 use App\Jobs\AnalyzeBackIneJob;
 use App\Models\Address;
 use App\Models\FaceapiPerson;
@@ -68,52 +69,69 @@ class CommerceController extends Controller
     public function addPerson(Request $request, $commerceId)
     {
         $commerce = Commerce::find($commerceId);
+        //* Verificación de la existencia del comercio
+        if (!isset($commerce)) {
+            return JsonResponse::sendError('El ID proporcionado es incorrecto');
+        }
+        //* Verificación de la existencia de grupos de personas
         if (!isset($commerce->faceapiPersonGroup)) {
             return JsonResponse::sendError('No se encuentra un comercio registrado con el ID proporcionado');
         }
         $personGroup = $commerce->faceapiPersonGroup;
+
         $urlIne = $request->photo_url;
         $backIne = $request->back_photo_url;
-        if (!isset($commerce)) {
-            return JsonResponse::sendError('El ID proporcionado es incorrecto');
-        }
+        //* Análisis de la fotografía del INE enviada por el usuario
         $results = AnalyzeDocument::analyzeDocument($urlIne);
         $dataExtracted = $results[0];
+
+        //* Validación de existencia de la clave de elector
         if (!isset($dataExtracted['clave_elector'])) {
-            throw new WrongImageUrl('No se ha podido reconocer la clade de elector del documento. Asegúrese que la calidad del documento sea buena.', 400);
+            throw new WrongImageUrl('No se ha podido reconocer la clave de elector del documento. Asegúrese que la calidad del documento sea buena.', 400);
         }
+
+        //* Búsqueda de la persona a la que pertenece la fotografia del INE recibida mediante su clave de elector
         $person = Person::where('clave_elector', $dataExtracted['clave_elector'])->first();
         if (!isset($person)) {
+            //* Si no se encuentra registrada, créala
             $person = $this->registerPerson($dataExtracted, $urlIne);
             AnalyzeBackIneJob::dispatch($person, $backIne);
         }
+
+        //* Busqueda de la persona de acuerdo al comercio al que se encuentra registrado
         $faceapiPerson = FaceapiPerson::where(['person_id' => $person->id, 'faceapi_person_group_id' => $personGroup->id])->first();
         if (!isset($faceapiPerson)) {
+
+            //* Si no se encuentra registrada en el comercio, detecta la ubicación el rostro contenido en el INE
             $detectFaceResults = $this->detectFacesOnIne($person, $urlIne);
+
+            //* Añade la persona al grupo
             $faceapiPerson = $commerce->addToPersonGroup($person);
             $persistedFaceResponse = $faceapiPerson->addFace($detectFaceResults, $urlIne);
             if (isset($persistedFaceResponse->error)) {
                 $error = $persistedFaceResponse->error;
                 return JsonResponse::sendError($error->code, 400, $error->message);
             }
+            //* Realiza el entrenamiento
             $commerce->train();
         }
         if (!isset($person->addressInformation)) {
             $addressInformation = $this->extractAddressInformation($dataExtracted);
             $person->setAddressInformation($addressInformation);
         }
-        $data = $this->formatResponseData($faceapiPerson, $dataExtracted, $person);
-        $data['person'] = $this->formatPersonName($data);
-        $data = $this->unsetAddressFromResponse($data);
-        return JsonResponse::sendResponse($data);
+        // $data = $this->formatResponseData($faceapiPerson, $dataExtracted, $person);
+        // $data['person'] = $this->formatPersonName($data);
+        // $data = $this->unsetAddressFromResponse($data);
+        $personInformation = new FaceApiPersonResource($faceapiPerson);
+        return JsonResponse::sendResponse($personInformation);
     }
 
     private function registerPerson($dataExtracted, $ineUrl)
     {
+        $address = $this->extractAddressInformation($dataExtracted);
         $searchParams = [
             'clave_elector' => $dataExtracted['clave_elector']
         ];
-        $address = $this->extractAddressInformation($dataExtracted);
         $attributes = [
             'name' => $dataExtracted['nombre'],
             'father_lastname' => $dataExtracted['apellido_paterno'],
@@ -121,12 +139,11 @@ class CommerceController extends Controller
             'curp' => $dataExtracted['curp'],
             'gender' => $dataExtracted['sexo'],
             'birthdate' => $dataExtracted['nacimiento'],
-            'address' => $this->formatAddress($address),
+            'address' => $this->formatFullAddress($address),
             'ine_url' => $ineUrl,
         ];
         $person = Person::firstOrCreate($searchParams, $attributes);
-        $address['person_id'] = $person->id;
-        Address::create($address);
+        $person->setAddressInformation($address);
         return $person;
     }
 
@@ -166,16 +183,29 @@ class CommerceController extends Controller
 
     protected function extractAddressInformation($dataExtracted)
     {
-        $address['first_address'] = isset($dataExtracted['primer_direccion']) ? $dataExtracted['primer_direccion'] : "";
-        $address['second_address'] = isset($dataExtracted['segunda_direccion']) ? $dataExtracted['segunda_direccion'] : "";
-        $address['exterior_number'] = isset($dataExtracted['numero_exterior']) ? $dataExtracted['numero_exterior'] : "";
-        $address['state'] = isset($dataExtracted['nombre_estado']) ? $dataExtracted['nombre_estado'] : "";
-        $address['city'] = isset($dataExtracted['nombre_municipio']) ? $dataExtracted['nombre_municipio'] : "";
-        $address['zip_code'] = isset($dataExtracted['codigo_postal']) ? $dataExtracted['codigo_postal'] : "";
+        $firstAddress = "";
+        if (isset($dataExtracted['domicilio_linea_uno'])) {
+            $firstAddress = $dataExtracted['domicilio_linea_uno'];
+            $address['exterior_number'] = $this->extractLastIndexFromText($firstAddress);
+        }
+        $address['first_address'] = $firstAddress;
+        $secondAddress = "";
+        if (isset($dataExtracted['domicilio_linea_dos'])) {
+            $secondAddress = $dataExtracted['domicilio_linea_dos'];
+            $address['zip_code'] = $this->extractLastIndexFromText($secondAddress);
+        }
+        $address['second_address'] = $secondAddress;
+        $thirdAddress = "";
+        if (isset($dataExtracted['domicilio_linea_tres'])) {
+            $thirdAddress = $dataExtracted['domicilio_linea_tres'];
+            $informationFormatted = $this->extractStateInformation($thirdAddress);
+            $address['city'] = $informationFormatted[0];
+            $address['state'] = $informationFormatted[1];
+        }
         return $address;
     }
 
-    protected function formatAddress($addressInformation)
+    protected function formatFullAddress($addressInformation)
     {
         $address = "{$addressInformation['first_address']} {$addressInformation['exterior_number']} {$addressInformation['second_address']} {$addressInformation['zip_code']} {$addressInformation['city']} {$addressInformation['state']}";
         return trim($address);
@@ -205,5 +235,24 @@ class CommerceController extends Controller
             return $personInformation;
         }
         return $data['person'];
+    }
+
+    private function extractLastIndexFromText($textLine)
+    {
+        $textArray = explode(' ', $textLine);
+        return end($textArray);
+    }
+
+    private function extractStateInformation($stateInformation)
+    {
+        $stateArray = explode(',', $stateInformation);
+        foreach ($stateArray as $key => $word) {
+            if (strcmp($word, '') === 0) {
+                unset($stateArray[$key]);
+            } else {
+                $stateArray[$key] = trim($word);
+            }
+        }
+        return $stateArray;
     }
 }

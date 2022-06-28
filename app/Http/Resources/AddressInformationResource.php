@@ -19,7 +19,7 @@ class AddressInformationResource extends JsonResource
             'segunda_direccion' => $this->second_address,
             'numero_exterior' => $this->exterior_number,
             'estado' => $this->state,
-            'ciudad' => $this->city,
+            'municipio' => $this->city,
             'codigo_postal' => $this->zip_code,
         ];
     }

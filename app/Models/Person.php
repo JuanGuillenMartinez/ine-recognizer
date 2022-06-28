@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\FaceApi\PersonGroupPerson;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\FaceApi\PersonGroupPerson;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Person extends Model
 {
@@ -29,7 +30,7 @@ class Person extends Model
 
     public function faceapiPerson()
     {
-        return $this->hasOne(FaceapiPerson::class);
+        return $this->hasMany(FaceapiPerson::class);
     }
 
     public function ineInformation()
@@ -45,6 +46,17 @@ class Person extends Model
     public function addressInformation()
     {
         return $this->hasOne(Address::class);
+    }
+
+    public function names()
+    {
+        $personName = trim($this->name);
+        $nameExploded = explode(' ', $personName);
+        $names['first_name'] = array_shift($nameExploded);
+        if (count($nameExploded) > 0) {
+            $names['other_names'] = implode(' ', $nameExploded);
+        }
+        return (object) $names;
     }
 
     public function setAddressInformation($attributes)
