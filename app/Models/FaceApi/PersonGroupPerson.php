@@ -2,6 +2,7 @@
 
 namespace App\Models\FaceApi;
 
+use App\Exceptions\AzureFaceApiException;
 use Illuminate\Support\Facades\Http;
 
 class PersonGroupPerson
@@ -29,19 +30,23 @@ class PersonGroupPerson
             'name' => $name,
             'userData' => $userData,
         ]);
-        return json_decode($response);
+        $jsonResponse = json_decode($response);
+        $this->existErrorOnResponse($jsonResponse);
+        return $jsonResponse;
     }
 
     public function addFace($personId, $imageUrl, $targetFace = null, $userData = '')
     {
         $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons/{$personId}/persistedFaces?userData={$userData}&detectionModel={$this->detectionModel}";
-        if(isset($targetFace)) {
+        if (isset($targetFace)) {
             $endpoint = $endpoint . '&targetFace=' . $targetFace;
         }
         $response = Http::withHeaders($this->headers)->post($endpoint, [
             'url' => $imageUrl,
         ]);
-        return json_decode($response);
+        $jsonResponse = json_decode($response);
+        $this->existErrorOnResponse($jsonResponse);
+        return $jsonResponse;
     }
 
     public function list($start = '', $top = 1000)
@@ -51,26 +56,42 @@ class PersonGroupPerson
             $endpoint = $endpoint . "&start={$start}";
         }
         $response = Http::withHeaders($this->headers)->get($endpoint);
-        return json_decode($response);
+        $jsonResponse = json_decode($response);
+        $this->existErrorOnResponse($jsonResponse);
+        return $jsonResponse;
     }
 
     public function get($personId)
     {
         $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons/{$personId}";
         $response = Http::withHeaders($this->headers)->get($endpoint);
-        return json_decode($response);
+        $jsonResponse = json_decode($response);
+        $this->existErrorOnResponse($jsonResponse);
+        return $jsonResponse;
     }
 
     public function delete($personId)
     {
         $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons/{$personId}";
         $response = Http::withHeaders($this->headers)->delete($endpoint);
-        return json_decode($response);
+        $jsonResponse = json_decode($response);
+        $this->existErrorOnResponse($jsonResponse);
+        return $jsonResponse;
     }
 
-    public function deleteFace($personId, $persistedFaceId) {
+    public function deleteFace($personId, $persistedFaceId)
+    {
         $endpoint = "{$this->baseUrl}/{$this->personGroupId}/persons/{$personId}/persistedFaces/{$persistedFaceId}";
         $response = Http::withHeaders($this->headers)->delete($endpoint);
-        return json_decode($response);
+        $jsonResponse = json_decode($response);
+        $this->existErrorOnResponse($jsonResponse);
+        return $jsonResponse;
+    }
+
+    protected function existErrorOnResponse($response)
+    {
+        if (isset($response->error)) {
+            throw new AzureFaceApiException(json_encode($response->error), 415);
+        }
     }
 }

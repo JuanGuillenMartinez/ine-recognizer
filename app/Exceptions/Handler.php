@@ -60,5 +60,9 @@ class Handler extends ExceptionHandler
         $this->renderable(function(UserIsBanned $e) {
             return JsonResponse::sendError($e->getMessage(), $e->getCode(), ['description' => 'El usuario ha sido dado de baja del sistema. Contacte con el administrador.']);
         });
+        $this->renderable(function(AzureFaceApiException $e) {
+            $message = json_decode($e->getMessage());
+            return JsonResponse::sendError($message->code, $e->getCode(), ['description' => $message->message]);
+        });
     }
 }
