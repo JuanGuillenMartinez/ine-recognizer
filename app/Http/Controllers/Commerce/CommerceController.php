@@ -201,7 +201,7 @@ class CommerceController extends Controller
 
     protected function formatFullAddress($addressInformation)
     {
-        $address = "{$addressInformation['first_address']} {$addressInformation['exterior_number']} {$addressInformation['second_address']} {$addressInformation['zip_code']} {$addressInformation['city']} {$addressInformation['state']}";
+        $address = "{$addressInformation['first_address']} {$addressInformation['second_address']} {$addressInformation['city']} {$addressInformation['state']}";
         return trim($address);
     }
 
