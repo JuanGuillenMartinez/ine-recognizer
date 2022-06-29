@@ -17,17 +17,21 @@ use Illuminate\Support\Facades\Log;
 class AnalyzeBackIneJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
     public $person;
     public $urlIne;
+    public $dataExtracted;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Person $person, $urlIne)
+    public function __construct(Person $person, $urlIne, $dataExtracted)
     {
         $this->person = $person;
         $this->urlIne = $urlIne;
+        $this->dataExtracted = $dataExtracted;
     }
 
     /**

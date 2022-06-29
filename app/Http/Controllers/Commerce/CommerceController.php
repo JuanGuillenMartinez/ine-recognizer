@@ -100,7 +100,7 @@ class CommerceController extends Controller
         if (!isset($person)) {
             //* Si no se encuentra registrada, créala
             $person = $this->registerPerson($dataExtracted, $urlIne);
-            AnalyzeBackIneJob::dispatch($person, $backIne);
+            AnalyzeBackIneJob::dispatch($person, $backIne, $dataExtracted);
         }
 
         //* Busqueda de la persona de acuerdo al comercio al que se encuentra registrado
@@ -124,6 +124,7 @@ class CommerceController extends Controller
             $addressInformation = $this->extractAddressInformation($dataExtracted);
             $person->setAddressInformation($addressInformation);
         }
+        // $this->waitIneBackInformation
         $personInformation = new FaceApiPersonResource($faceapiPerson);
         $arrayResponse = json_decode($personInformation->toJson(), true);
         $arrayResponse['person']['id'] = $faceapiPerson->id;
