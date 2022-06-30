@@ -130,10 +130,9 @@ class CommerceController extends Controller
             $addressInformation = $this->extractAddressInformation($dataExtracted);
             $person->setAddressInformation($addressInformation);
         }
+        $faceapiPerson->refresh();
         $personInformation = new FaceApiPersonResource($faceapiPerson);
-        $arrayResponse = json_decode($personInformation->toJson(), true);
-        $arrayResponse['person']['id'] = $faceapiPerson->id;
-        return JsonResponse::sendResponse($arrayResponse);
+        return JsonResponse::sendResponse($personInformation);
     }
 
     private function registerPerson($dataExtracted, $ineUrl)

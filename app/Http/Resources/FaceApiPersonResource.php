@@ -19,6 +19,7 @@ class FaceApiPersonResource extends JsonResource
             'person' => new PersonInformationResource($this->person),
             'faceapi_person_id' => $this->faceapi_person_id,
             'informacion_domicilio' => new AddressInformationResource($this->person->addressInformation),
+            'informacion_ine' => new BackIneDetailResource($this->backIneResult),
         ];
     }
 }
