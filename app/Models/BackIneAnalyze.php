@@ -1,35 +1,22 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Models;
 
 use App\Models\Person;
-use Illuminate\Bus\Queueable;
-use App\Models\IneInformation;
 use App\Helpers\AnalyzeDocument;
 use App\Models\BackIneDetail;
 use App\Models\IneDetail;
 use App\Models\IneModel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Support\Facades\Log;
 
-class AnalyzeBackIneJob implements ShouldQueue
+class BackIneAnalyze
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $person;
     public $urlIne;
     public $dataExtracted;
     public $faceApiPerson;
 
-    /**
-     * Create a new job instance.
-     *
-     * @return void
-     */
     public function __construct(Person $person, $urlIne, $dataExtracted, $faceapiPerson)
     {
         $this->person = $person;
@@ -38,12 +25,7 @@ class AnalyzeBackIneJob implements ShouldQueue
         $this->faceApiPerson = $faceapiPerson;
     }
 
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function handle()
+    public function run()
     {
         $backResults = AnalyzeDocument::analyzeDocument($this->urlIne);
         $this->persistIneInformation($this->person->id, $backResults[0]);

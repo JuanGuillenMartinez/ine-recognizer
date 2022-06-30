@@ -32,6 +32,10 @@ class FaceapiPerson extends Model
         return $this->hasMany(FaceapiVerifyResult::class);
     }
 
+    public function backIneResult() {
+        return $this->hasOne(BackIneDetail::class);
+    }
+
     public function personGroupId()
     {
         return $this->faceapiPersonGroup->person_group_id;

@@ -16,6 +16,7 @@ use App\Http\Resources\AddressInformationResource;
 use App\Http\Resources\FaceApiPersonResource;
 use App\Jobs\AnalyzeBackIneJob;
 use App\Models\Address;
+use App\Models\BackIneAnalyze;
 use App\Models\FaceapiPerson;
 use App\Models\IneInformation;
 use Illuminate\Support\Facades\Hash;
@@ -72,7 +73,7 @@ class CommerceController extends Controller
             'photo_url' => 'string|required',
             'back_photo_url' => 'string|required',
         ]);
-        
+
         $commerce = Commerce::find($commerceId);
         //* Verificación de la existencia del comercio
         if (!isset($commerce)) {
@@ -100,7 +101,6 @@ class CommerceController extends Controller
         if (!isset($person)) {
             //* Si no se encuentra registrada, créala
             $person = $this->registerPerson($dataExtracted, $urlIne);
-            AnalyzeBackIneJob::dispatch($person, $backIne, $dataExtracted);
         }
 
         //* Busqueda de la persona de acuerdo al comercio al que se encuentra registrado
@@ -120,11 +120,16 @@ class CommerceController extends Controller
             //* Realiza el entrenamiento
             $commerce->train();
         }
+
+        if (!isset($faceapiPerson->backIneResult)) {
+            $backAnalyzeHandler = new BackIneAnalyze($person, $backIne, $dataExtracted, $faceapiPerson);
+            $backAnalyzeHandler->run();
+        }
+
         if (!isset($person->addressInformation)) {
             $addressInformation = $this->extractAddressInformation($dataExtracted);
             $person->setAddressInformation($addressInformation);
         }
-        // $this->waitIneBackInformation
         $personInformation = new FaceApiPersonResource($faceapiPerson);
         $arrayResponse = json_decode($personInformation->toJson(), true);
         $arrayResponse['person']['id'] = $faceapiPerson->id;

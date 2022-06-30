@@ -8,6 +8,7 @@ use App\Models\Person;
 use Illuminate\Http\Request;
 use App\Models\FaceapiPerson;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BackIneDetailResource;
 use App\Jobs\TrainPersonWithPhotoSended;
 use App\Models\Commerce;
 use App\Models\FaceapiVerifyResult;
@@ -37,6 +38,19 @@ class PersonController extends Controller
             TrainPersonWithPhotoSended::dispatch($faceapiPerson, $verifyResults);
         }
         return JsonResponse::sendResponse($response);
+    }
+
+    public function backIneInformation(Request $request, $commerceId, $personId)
+    {
+        $faceapiPerson = FaceapiPerson::find($personId);
+        if (!isset($faceapiPerson)) {
+            return JsonResponse::sendError('El ID proporcionado es incorrecto');
+        }
+        $commerceFaceApiId = $faceapiPerson->faceapiPersonGroup->commerce_id;
+        if (intval($commerceId) !== $commerceFaceApiId) {
+            return JsonResponse::sendError('La persona no se encuentra registrada en el comercio');
+        }
+        return JsonResponse::sendResponse(new BackIneDetailResource($faceapiPerson->backIneResult));
     }
 
     public function personInformation(Request $request, $commerceId)

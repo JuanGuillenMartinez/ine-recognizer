@@ -13,11 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('ine_details', function (Blueprint $table) {
+        Schema::create('back_ine_details', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('faceapi_person_id')->constrained();
             $table->string('citizen_identifier')->nullable();
             $table->string('cic')->nullable();
             $table->string('ocr')->nullable();
             $table->string('model')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -28,8 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('ine_details', function (Blueprint $table) {
-            $table->dropColumn('citizen_identifier');
-        });
+        Schema::dropIfExists('back_ine_results');
     }
 };

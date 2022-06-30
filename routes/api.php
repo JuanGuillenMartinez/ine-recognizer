@@ -62,6 +62,7 @@ Route::middleware(['auth:sanctum', 'role:super-admin|user', 'active'])->group(fu
     Route::get('/commerces/{commerceId}/persongroup', [CommerceController::class, 'faceapiPersonGroupId']);
     Route::post('/commerces/{commerceId}/search/persons', [PersonController::class, 'personInformation']);
     Route::post('/commerces/{commerceId}/persons/{personId}/verify', [PersonController::class, 'analyzeFaceToPerson'])->middleware('limit:verify_identity');
+    Route::get('/commerces/{commerceId}/persons/{personId}/cic', [PersonController::class, 'backIneInformation']);
     /** 
      FACE API ENDPOINTS 
      */
