@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Recognizer",
-        "description": "Este sistema permite registrar distintos comercios para realizar validaciones de identidad mediante el servicio de análisis de rostros proporcionados por Azure FaceAPI.\n\n Como usuario del sistema, tienes a tu disposición la siguiente serie de endpoints.\n\n 1. Para iniciar a utilizar el servicio, debes de autenticarte mediante el endpoint de /auth/login. Este recibe las credenciales proporcionadas por el administrador del sistema via correo electrónico.\n\n 2. Una vez obtenido el bearer token, este debe ser enviado mediante la cabecera 'Authorization' de cada una de las siguientes peticiones. \n\n3. Para dar de alta a una persona en tu comercio, tienes a tu disposición el endpoint de 'Registrar persona', este endpoint recibe unicamente las fotografías de la parte delantera y trasera de la credencial de elector (INE) que sera dado de alta. Este devuelve el ID de la persona utilizado para realizar la verificación de identidad mediante rostros.\n\n4. Una vez ha sido registrada la persona, se puede empezar a realizar la verificación de identidad mediante el ID del comercio al que pertenece, asi como del ID de la persona. Para esto se proporciona el endpoint de 'Verificar identidad'. La confidencialidad devuelta por este endpoint indica los resultados del análisis. Si es mayor que 0.7, la verificación de identidad fue correcta.\n\n Si se desconoce el ID interno de la persona, se puede consultar mediante la CURP obtenida al momento de haber sido registrado.",
+        "description": "Este sistema permite registrar distintos comercios para realizar validaciones de identidad mediante el servicio de análisis de rostros proporcionados por Azure FaceAPI.\n\n Como usuario del sistema, tienes a tu disposición la siguiente serie de endpoints.\n\n 1. Para iniciar a utilizar el servicio, debes de autenticarte mediante el endpoint de /auth/login. Este recibe las credenciales proporcionadas por el administrador del sistema via correo electrónico.\n\n 2. Una vez obtenido el bearer token, este debe ser enviado mediante la cabecera 'Authorization' de cada una de las siguientes peticiones. \n\n3. Para dar de alta a una persona en tu comercio, tienes a tu disposición el endpoint de 'Registrar persona', este endpoint recibe unicamente las fotografías de la parte delantera y trasera de la credencial de elector (INE) que sera dado de alta. Este devuelve el ID de la persona utilizado para realizar la verificación de identidad mediante rostros.\n\n4. Una vez ha sido registrada la persona, se puede empezar a realizar la verificación de identidad mediante el ID del comercio al que pertenece, asi como del ID de la persona. Para esto se proporciona el endpoint de 'Verificar identidad'. La confidencialidad devuelta por este endpoint indica los resultados del análisis. Si es mayor que 0.7, la verificación de identidad fue correcta.\n\n Si se desconoce el ID interno de la persona, se puede consultar mediante la CURP obtenida al momento de haber sido registrado.\n\n **Credenciales admitidas**\n\n * Credenciales de tipo E emitidas a partir de julio de 2014\n\n * Credenciales de tipo G emitidas a partir de diciembre de 2019\n\n Mas informacion acerca de las [credenciales del INE](https://listanominal.ine.mx/scpln/)",
         "version": "1.0.0"
     },
     "tags": [
@@ -747,37 +747,25 @@
                         "type": "string",
                         "example": "M"
                     },
-                    "registro": {
-                        "type": "string",
-                        "example": "2008 01"
-                    },
-                    "vigencia": {
-                        "type": "string",
-                        "example": "2019 - 2029"
-                    },
                     "apellido_paterno": {
                         "type": "string",
                         "example": "GOMEZ"
-                    },
-                    "pais_emision": {
-                        "type": "string",
-                        "example": "MÉXICO"
                     },
                     "nacimiento": {
                         "type": "string",
                         "example": "05/07/1980"
                     },
-                    "identificacion": {
-                        "type": "string",
-                        "example": "INSTITUTO NACIONAL ELECTORAL CREDENCIAL PARA VOTAR"
-                    },
                     "curp": {
                         "type": "string",
                         "example": "GOVM800705MCLR01"
                     },
-                    "nombre": {
+                    "primer_nombre": {
                         "type": "string",
-                        "example": "MARGARITA"
+                        "example": "ROMEO"
+                    },
+                    "segundo_nombre": {
+                        "type": "string",
+                        "example": "ESTEBAN"
                     },
                     "clave_elector": {
                         "type": "string",
@@ -790,11 +778,12 @@
                     "apellido_materno": {
                         "type": "string",
                         "example": "VELAZQUEZ"
-                    },
-                    "seccion": {
-                        "type": "string",
-                        "example": "0001"
-                    },
+                    }
+                }
+            },
+            "AddressInformation": {
+                "type": "object",
+                "properties": {
                     "informacion_domicilio": {
                         "type": "object",
                         "properties": {
@@ -814,13 +803,39 @@
                                 "type": "string",
                                 "example": "TAB"
                             },
-                            "ciudad": {
+                            "municipio": {
                                 "type": "string",
                                 "example": "Centro"
                             },
                             "codigo_postal": {
                                 "type": "string",
                                 "example": "Av. 04330"
+                            }
+                        }
+                    }
+                }
+            },
+            "IneInformation": {
+                "type": "object",
+                "properties": {
+                    "informacion_domicilio": {
+                        "type": "object",
+                        "properties": {
+                            "tipo_identificacion": {
+                                "type": "string",
+                                "example": "E"
+                            },
+                            "cic": {
+                                "type": "string",
+                                "example": "1251662325"
+                            },
+                            "identificador_del_ciudadano": {
+                                "type": "string",
+                                "example": "099301650"
+                            },
+                            "ocr": {
+                                "type": "string",
+                                "example": "301650"
                             }
                         }
                     }
@@ -893,6 +908,14 @@
                                 "example": "0001"
                             }
                         }
+                    },
+                    "informacion_domicilio": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/AddressInformation"
+                    },
+                    "informacion_ine": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/IneInformation"
                     }
                 }
             },
