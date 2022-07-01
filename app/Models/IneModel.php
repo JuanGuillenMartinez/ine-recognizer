@@ -53,9 +53,7 @@ class IneModel
         $cicArray = str_split($cic);
         $cicArray = $this->clearSpecialCharsFromArray('<', $cicArray);
         $cicLength = count($cicArray) - 1;
-        if ((strcmp($cicArray[$cicLength], '0')) === 0) {
-            unset($cicArray[$cicLength]);
-        }
+        unset($cicArray[$cicLength]);
         return implode($cicArray);
     }
 
