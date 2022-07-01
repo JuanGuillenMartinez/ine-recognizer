@@ -818,26 +818,21 @@
             "IneInformation": {
                 "type": "object",
                 "properties": {
-                    "informacion_domicilio": {
-                        "type": "object",
-                        "properties": {
-                            "tipo_identificacion": {
-                                "type": "string",
-                                "example": "E"
-                            },
-                            "cic": {
-                                "type": "string",
-                                "example": "1251662325"
-                            },
-                            "identificador_del_ciudadano": {
-                                "type": "string",
-                                "example": "099301650"
-                            },
-                            "ocr": {
-                                "type": "string",
-                                "example": "301650"
-                            }
-                        }
+                    "tipo_identificacion": {
+                        "type": "string",
+                        "example": "E"
+                    },
+                    "cic": {
+                        "type": "string",
+                        "example": "1251662325"
+                    },
+                    "identificador_del_ciudadano": {
+                        "type": "string",
+                        "example": "099301650"
+                    },
+                    "ocr": {
+                        "type": "string",
+                        "example": "301650"
                     }
                 }
             },
