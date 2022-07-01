@@ -17,7 +17,7 @@ class DeleteRowsFromPeopleWithTheOldModel extends Seeder
     public function run()
     {
         $persons = Person::all();
-        $dateNow = new Carbon('2022-06-30 16:00:00');
+        $dateNow = new Carbon('2022-07-01 12:40:00');
         foreach($persons as $person) {
             $dateCreated = new Carbon($person->created_at);
             if($dateCreated->lessThan($dateNow)) {
