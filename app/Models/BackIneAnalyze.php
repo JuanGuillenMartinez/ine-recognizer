@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Person;
 use App\Helpers\AnalyzeDocument;
+use App\Helpers\IneValidator;
 use App\Models\BackIneDetail;
 use App\Models\IneDetail;
 use App\Models\IneModel;
@@ -16,6 +17,7 @@ class BackIneAnalyze
     public $urlIne;
     public $dataExtracted;
     public $faceApiPerson;
+    public $fieldsRequired = ['identificador_documento', 'identificador_ciudadano', 'identificador_fecha', 'identificador_titular'];
 
     public function __construct(Person $person, $urlIne, $dataExtracted, $faceapiPerson)
     {
@@ -28,9 +30,12 @@ class BackIneAnalyze
     public function run()
     {
         $backResults = AnalyzeDocument::analyzeDocument($this->urlIne);
-        $this->persistIneInformation($this->person->id, $backResults[0]);
+        $results = $backResults[0];
+        $validateBackResults = new IneValidator($results);
+        $validateBackResults->allFieldsRequiredExist($results, $this->fieldsRequired);
+        $this->persistIneInformation($this->person->id, $results);
         $ineModel = $this->determineIneModel($this->dataExtracted);
-        $backIneResults = $this->formatBackIneInformation($ineModel, $backResults[0]);
+        $backIneResults = $this->formatBackIneInformation($ineModel, $results);
         $this->persistBackIneInformation($this->faceApiPerson, $backIneResults);
     }
 

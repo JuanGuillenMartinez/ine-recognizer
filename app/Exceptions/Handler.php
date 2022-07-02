@@ -64,5 +64,9 @@ class Handler extends ExceptionHandler
             $message = json_decode($e->getMessage());
             return JsonResponse::sendError($message->code, $e->getCode(), ['description' => $message->message]);
         });
+        $this->renderable(function(WrongOCRLecture $e) {
+            $message = json_decode($e->getMessage());
+            return JsonResponse::sendError('La información extraída mediante la lectura OCR es incorrecta. Favor de tomar la fotografía de nuevo. Tome en cuenta las consideraciones descritas en la documentación', $e->getCode(), ['field_failed' => $message->field]);
+        });
     }
 }

@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers\Commerce;
 
-use App\Exceptions\WrongImageUrl;
 use App\Models\User;
 use App\Models\Person;
+use App\Models\Address;
 use App\Models\Commerce;
 use App\Models\IneResult;
 use Illuminate\Http\Request;
+use App\Helpers\IneValidator;
 use App\Helpers\JsonResponse;
-use App\Helpers\FaceApiRequest;
-use App\Helpers\AnalyzeDocument;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\AddressInformationResource;
-use App\Http\Resources\FaceApiPersonResource;
-use App\Jobs\AnalyzeBackIneJob;
-use App\Models\Address;
-use App\Models\BackIneAnalyze;
 use App\Models\FaceapiPerson;
+use App\Models\BackIneAnalyze;
 use App\Models\IneInformation;
+use App\Helpers\FaceApiRequest;
+use App\Jobs\AnalyzeBackIneJob;
+use App\Helpers\AnalyzeDocument;
+use App\Exceptions\WrongImageUrl;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\FaceApiPersonResource;
+use App\Http\Resources\AddressInformationResource;
 
 class CommerceController extends Controller
 {
@@ -91,10 +92,8 @@ class CommerceController extends Controller
         $results = AnalyzeDocument::analyzeDocument($urlIne);
         $dataExtracted = $results[0];
 
-        //* Validación de existencia de la clave de elector
-        if (!isset($dataExtracted['clave_elector'])) {
-            throw new WrongImageUrl('No se ha podido reconocer la clave de elector del documento. Asegúrese que la calidad del documento sea buena.', 400);
-        }
+        //* Valida que la información recibida mediante OCR sea correcta
+        $dataExtracted = $this->validateInformationExtracted($dataExtracted);
 
         //* Búsqueda de la persona a la que pertenece la fotografia del INE recibida mediante su clave de elector
         $person = Person::where('clave_elector', $dataExtracted['clave_elector'])->first();
@@ -142,12 +141,12 @@ class CommerceController extends Controller
             'clave_elector' => $dataExtracted['clave_elector']
         ];
         $attributes = [
-            'name' => $dataExtracted['nombre'],
-            'father_lastname' => $dataExtracted['apellido_paterno'],
-            'mother_lastname' => $dataExtracted['apellido_materno'],
-            'curp' => $dataExtracted['curp'],
-            'gender' => $dataExtracted['sexo'],
-            'birthdate' => $dataExtracted['nacimiento'],
+            'name' => isset($dataExtracted['nombre']) ? $dataExtracted['nombre'] : null,
+            'father_lastname' => isset($dataExtracted['apellido_paterno']) ? $dataExtracted['apellido_paterno'] : null,
+            'mother_lastname' => isset($dataExtracted['apellido_materno']) ? $dataExtracted['apellido_materno'] : null,
+            'curp' => isset($dataExtracted['curp']) ? $dataExtracted['curp'] : null,
+            'gender' => isset($dataExtracted['sexo']) ? $dataExtracted['sexo'] : null,
+            'birthdate' => isset($dataExtracted['nacimiento']) ? $dataExtracted['nacimiento'] : null,
             'address' => $this->formatFullAddress($address),
             'ine_url' => $ineUrl,
         ];
@@ -227,5 +226,10 @@ class CommerceController extends Controller
             }
         }
         return $stateArray;
+    }
+
+    private function validateInformationExtracted($dataExtracted) {
+        $validator = new IneValidator($dataExtracted);
+        return $validator->validate();
     }
 }
