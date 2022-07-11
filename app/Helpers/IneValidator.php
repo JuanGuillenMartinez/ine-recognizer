@@ -14,8 +14,6 @@ class IneValidator
         'apellido_materno',
         'clave_elector',
         'curp',
-        'vigencia',
-        'nacimiento',
         'emitido_por'
     ];
 

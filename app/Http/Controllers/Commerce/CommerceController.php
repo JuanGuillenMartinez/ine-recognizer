@@ -146,7 +146,7 @@ class CommerceController extends Controller
             'mother_lastname' => isset($dataExtracted['apellido_materno']) ? $dataExtracted['apellido_materno'] : null,
             'curp' => isset($dataExtracted['curp']) ? $dataExtracted['curp'] : null,
             'gender' => isset($dataExtracted['sexo']) ? $dataExtracted['sexo'] : null,
-            'birthdate' => isset($dataExtracted['nacimiento']) ? $dataExtracted['nacimiento'] : null,
+            'birthdate' => isset($dataExtracted['nacimiento']) ? $dataExtracted['nacimiento'] : "",
             'address' => $this->formatFullAddress($address),
             'ine_url' => $ineUrl,
         ];

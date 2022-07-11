@@ -32,11 +32,12 @@ class BackIneAnalyze
     {
         $backResults = AnalyzeDocument::analyzeDocument($this->urlIne);
         $results = $backResults[0];
+        $ineModel = $this->determineIneModel($this->dataExtracted);
+        if(strcmp($ineModel, 'C') === 0) $this->fieldsRequired = ['ocr'];
         $validateBackResults = new IneValidator($results);
         $validateBackResults->allFieldsRequiredExist($results, $this->fieldsRequired);
         $this->persistIneInformation($this->person->id, $results);
-        $ineModel = $this->determineIneModel($this->dataExtracted);
-        $backIneResults = $this->formatBackIneInformation($ineModel, $results);
+        $backIneResults = $this->formatBackIneInformation($ineModel, $results, $this->dataExtracted);
         $this->persistBackIneInformation($this->faceApiPerson, $backIneResults);
     }
 
@@ -45,9 +46,10 @@ class BackIneAnalyze
         Log::info($ineInformation);
         $ineInformation = IneDetail::create([
             'person_id' => $personId,
-            'date_identifier' => $ineInformation['identificador_fecha'],
-            'owner_identifier' => $ineInformation['identificador_titular'],
-            'credential_identifier' => $ineInformation['identificador_documento'],
+            'date_identifier' => isset($ineInformation['identificador_fecha']) ? $ineInformation['identificador_fecha'] : null,
+            'owner_identifier' => isset($ineInformation['identificador_titular']) ? $ineInformation['identificador_titular'] : null,
+            'credential_identifier' => isset($ineInformation['identificador_documento']) ? $ineInformation['identificador_documento'] : null,
+            'vertical_number' => isset($ineInformation['ocr']) ? $ineInformation['ocr'] : null,
         ]);
         return $ineInformation;
     }
@@ -70,9 +72,9 @@ class BackIneAnalyze
         throw new WrongOCRLecture('{"field":"identificador_ciudadano"}', 406);
     }
 
-    private function formatBackIneInformation($ineModel, $backIneInformation)
+    private function formatBackIneInformation($ineModel, $backIneInformation, $frontIneInformation)
     {
-        $ineModel = new IneModel($ineModel, $backIneInformation);
+        $ineModel = new IneModel($ineModel, $backIneInformation, $frontIneInformation);
         return $ineModel->getBackInformation();
     }
 
@@ -87,6 +89,7 @@ class BackIneAnalyze
                 'cic' => isset($backIneResults['cic']) ? $backIneResults['cic'] : null,
                 'ocr' => isset($backIneResults['ocr']) ? $backIneResults['ocr'] : null,
                 'model' => isset($backIneResults['modelo']) ? $backIneResults['modelo'] : null,
+                'emision' => isset($backIneResults['emision']) ? $backIneResults['emision'] : null,
             ]
         );
         return isset($backIneDetail);

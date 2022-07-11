@@ -13,6 +13,7 @@ class IneDetail extends Model
         'date_identifier',
         'owner_identifier',
         'credential_identifier',
+        'vertical_number',
     ];
 
     public function person() {

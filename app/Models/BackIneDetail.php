@@ -16,6 +16,7 @@ class BackIneDetail extends Model
         'cic',
         'ocr',
         'model',
+        'emision',
     ];
 
     public function azurePerson() {

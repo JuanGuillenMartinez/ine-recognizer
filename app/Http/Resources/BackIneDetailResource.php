@@ -19,6 +19,7 @@ class BackIneDetailResource extends JsonResource
             'cic' => $this->when(isset($this->cic), $this->cic),
             'ocr' => $this->when(isset($this->ocr), $this->ocr),
             'identificador_del_ciudadano' => $this->when(isset($this->citizen_identifier), $this->citizen_identifier),
+            'emision' => $this->when(isset($this->emision), $this->emision),
         ];
     }
 }
