@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\WrongOCRLecture;
 use App\Models\Person;
 use App\Helpers\AnalyzeDocument;
 use App\Helpers\IneValidator;
@@ -55,13 +56,18 @@ class BackIneAnalyze
     {
         $keyWord = str_replace(' ', '', 'INSTITUTO FEDERAL ELECTORAL');
         $issuedBy = str_replace(' ', '', $ineInformation['emitido_por']);
-        if (strcmp($keyWord, $issuedBy) === 0) {
+        if (isset($ineInformation['folio'])) {
+            return 'C';
+        }
+        if (str_contains($issuedBy, $keyWord)) {
             return 'D';
         }
         if (!isset($ineInformation['emision'])) {
             return 'G';
+        } else {
+            return 'E';
         }
-        return 'E';
+        throw new WrongOCRLecture('{"field":"identificador_ciudadano"}', 406);
     }
 
     private function formatBackIneInformation($ineModel, $backIneInformation)
