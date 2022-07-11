@@ -217,6 +217,8 @@ class CommerceController extends Controller
 
     private function extractStateInformation($stateInformation)
     {
+        $stateInformation = str_replace('.', ',', $stateInformation);
+        $stateInformation = trim($stateInformation);
         $stateArray = explode(',', $stateInformation);
         foreach ($stateArray as $key => $word) {
             if (strcmp($word, '') === 0) {
